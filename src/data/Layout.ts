@@ -1,9 +1,9 @@
 /*
-    TODO: agregar descripción
-    TODO: agregar keywords
+    TODO: agregar App Name
 */
 
 export default {
-  desc: 'this is my description',
-  keywords: 'my keywords',
+  desc: `App name: la plataforma ideal para compartir 
+  entre alumnos, cultura, musica, pensamientos, ayudas y mucho más!`,
+  keywords: 'App name, educación, IDDI, nueva granada, plataforma, cultura, colegio',
 };
