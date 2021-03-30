@@ -5,3 +5,7 @@ export interface LayoutProps {
 export interface SvgProps {
   path: string;
 }
+
+export interface AppPageProps {
+  unSuscribe: boolean;
+}

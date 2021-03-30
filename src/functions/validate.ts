@@ -1,4 +1,4 @@
-const mailRegex = /[A-z]{1,64}@iddi.edu.co$/;
+const mailRegex = /[A-z]{1,64}@iddi\.edu\.co$/;
 
 export const isEmpty = (...strings: string[]): boolean => {
   return strings.some((str) => str.trim() === '');

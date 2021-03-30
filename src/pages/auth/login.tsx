@@ -1,14 +1,23 @@
 import Link from 'next/link';
 import React from 'react';
+import { useRouter } from 'next/router';
+import Swal from 'sweetalert2';
 
 import Layout from '../../components/Layout';
 import BackButton from '../../components/UI/BackButton';
 import Svg from '../../components/UI/Svg';
+
+import firebase from '../../firebase';
 import { isEmpty, isValidAppEmail } from '../../functions/validate';
+import { emptyFields, invalidAppEmail, passLength } from '../../utils/errors';
+import { handleLoading } from '../../functions';
+
 import useForm from '../../hooks/useForm';
 import { LoginState } from '../../interfaces/states';
 
 import { AuthCtn } from '../../styles/components/auth';
+import { useSelector } from 'react-redux';
+import { AppCtx } from '../../interfaces/context';
 
 const Login = () => {
   const initState: LoginState = {
@@ -16,26 +25,55 @@ const Login = () => {
     password: '',
   };
 
+  const router = useRouter();
+
+  const user = useSelector((state: AppCtx) => state.user);
+
+  if (user) router.push('/app');
+
   const { data, handleChange, onSubmit } = useForm(initState, validate, success);
 
-  const { mail, password } = data;
+  const { mail, password }: LoginState = data;
 
   function validate() {
     const errors: string[] = [];
 
     if (isEmpty(mail, password)) {
-      errors.push('Porfavor rellene correctamente todos los campos');
+      errors.push(emptyFields);
     }
 
     if (!isValidAppEmail(mail)) {
-      errors.push('Ingrese un email válido pertenciente al IDDI Nueva Granada');
+      errors.push(invalidAppEmail);
+    }
+
+    if (password.length < 6) {
+      errors.push(passLength);
     }
 
     return errors;
   }
 
-  function success() {
-    console.log('todo bien');
+  async function success() {
+    try {
+      handleLoading(true);
+      await firebase.loginUser(data);
+      handleLoading(false);
+
+      router.push('/app');
+    } catch (e) {
+      handleLoading(false);
+      if (e.code === 'auth/wrong-password') {
+        Swal.fire('¡Error!', 'Correo y/o contraseña ingresados son incorrectos', 'error');
+        return;
+      }
+
+      if (e.code === 'auth/user-not-found') {
+        Swal.fire('¡Error!', 'Correo y/o contraseña ingresados son incorrectos', 'error');
+        return;
+      }
+
+      Swal.fire('¡Error!', e.message, 'error');
+    }
   }
 
   return (
