@@ -1,12 +1,13 @@
 import React from 'react';
-import Link from 'next/link';
 import Layout from '../components/Layout';
+import Landing from '../components/inicio/Landing';
+import Technologies from '../components/inicio/Technologies';
 
 const IndexPage = () => {
   return (
     <Layout title="Inicio">
-      <h1>hola mundo</h1>
-      <Link href="/app">App</Link>
+      <Landing />
+      <Technologies />
     </Layout>
   );
 };

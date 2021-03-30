@@ -1,10 +1,11 @@
 import React from 'react';
+import Layout from '../../components/Layout';
 
 const Config = () => {
   return (
-    <div>
+    <Layout title="Configuración">
       <h1>hello world in config</h1>
-    </div>
+    </Layout>
   );
 };
 
