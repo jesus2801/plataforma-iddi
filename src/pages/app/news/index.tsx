@@ -1,11 +1,11 @@
 import React from 'react';
-import Layout from '../../../components/Layout';
+import AppLayout from '../../../components/AppLayout';
 
 const News = () => {
   return (
-    <Layout title="Noticias y campañas">
+    <AppLayout title="Noticias y campañas">
       <h1>hello world in news </h1>
-    </Layout>
+    </AppLayout>
   );
 };
 

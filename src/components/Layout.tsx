@@ -6,9 +6,6 @@ import { LayoutProps } from '../interfaces/props';
 
 import data from '../data/Layout';
 import useAuthentication from '../hooks/useAuthentication';
-import { useDispatch } from 'react-redux';
-import { changeUser } from '../context/actions/user.actions';
-import { User } from '../interfaces';
 
 const Layout: NextPage<LayoutProps> = ({ title, children }) => {
   title = `App name | ${title}`;

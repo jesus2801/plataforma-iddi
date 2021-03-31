@@ -12,3 +12,13 @@ export interface StatusCode {
 }
 
 export type User = firebase.User | null;
+
+export interface PublicUserInfo {
+  grade: number;
+  id: string;
+  mail: string;
+  name: string;
+  nickname: string;
+  photo: null | string;
+  rol: 'student' | 'leader' | 'admin';
+}

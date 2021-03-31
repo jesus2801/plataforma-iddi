@@ -1,11 +1,11 @@
 import React from 'react';
-import Layout from '../../../components/Layout';
+import AppLayout from '../../../components/AppLayout';
 
 const Helps = () => {
   return (
-    <Layout title="Cursos y repasos">
+    <AppLayout title="Cursos y repasos">
       <h1>hello world in helps</h1>
-    </Layout>
+    </AppLayout>
   );
 };
 

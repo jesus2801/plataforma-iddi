@@ -27,7 +27,7 @@ const Login = () => {
 
   const router = useRouter();
 
-  const user = useSelector((state: AppCtx) => state.user);
+  const user = useSelector((state: AppCtx) => state.user.personal);
 
   if (user) router.push('/app');
 

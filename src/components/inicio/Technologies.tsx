@@ -3,7 +3,6 @@ import {
   Technologie,
   TechnologiesCtn,
 } from '../../styles/components/inicio/thecnologies';
-import { objectError } from '../../utils/variables';
 import Svg from '../UI/Svg';
 
 const Technologies = () => {

@@ -3,6 +3,8 @@ import type { NextRouter } from 'next/router';
 
 import config from './config';
 
+// import * as admin from 'firebase-admin';
+
 import 'firebase/firestore';
 import 'firebase/auth';
 
