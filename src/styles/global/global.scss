@@ -6,6 +6,10 @@ body {
   font-family: 'Nunito', sans-serif;
 }
 
+.ck-editor__editable_inline {
+  min-height: 300px;
+}
+
 :root {
   --blue: #2c76ff;
   --lightBlue: #22b9ff;

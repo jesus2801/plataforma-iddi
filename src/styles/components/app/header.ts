@@ -8,6 +8,7 @@ export const HeaderCtn = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  z-index: 6;
 
   width: 100%;
   padding: 10px 30px 10px 70px;
@@ -95,7 +96,7 @@ export const ConfigButtonCtn = styled.div`
     padding: 0;
     margin: 0;
 
-    position: absolute;
+    position: fixed;
     right: 0px;
     top: 70px;
 

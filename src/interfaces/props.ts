@@ -1,3 +1,5 @@
+import { ReactNode, HTMLAttributes } from 'react';
+
 export interface LayoutProps {
   title: string;
 }
@@ -6,8 +8,14 @@ export interface SvgProps {
   path: string;
 }
 
+export interface SelectProps extends HTMLAttributes<HTMLSelectElement> {
+  children: ReactNode;
+  minWidth: string;
+}
+
 export interface ProfileImgProps {
   size: string;
+  url?: string;
 }
 
 export interface SearchProps {

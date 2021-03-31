@@ -32,7 +32,6 @@ export function getPublicUserInfo(id: string, router: NextRouter) {
         .get();
 
       response.forEach((doc) => {
-        console.log(doc.data());
         dispatch(setUserInfo(doc.data() as PublicUserInfo));
       });
 

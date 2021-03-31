@@ -15,8 +15,9 @@ const Search = ({ placeholder, width }: SearchProps) => {
     border: 1px solid #dddddd;
     padding: 6px 15px;
     border-radius: 100px;
+    transition: border 300ms ease;
 
-    input:focus + & {
+    &:focus-within {
       border: 1px solid var(--blue);
     }
 

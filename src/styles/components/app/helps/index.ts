@@ -8,6 +8,168 @@ export const MainForumsCtn = styled.main`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    button {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+
+      border: none;
+      outline: none;
+      border-radius: 100px;
+      padding: 6px 13px;
+      color: #fff;
+      background-color: var(--blue);
+
+      cursor: pointer;
+      transition: transform 100ms ease;
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      img {
+        width: 20px;
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .forums {
+    margin-top: 40px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+  }
+`;
+
+export const ForumCard = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+
+  padding: 15px;
+  border-radius: 9px;
+  cursor: pointer;
+
+  -webkit-box-shadow: 1px 3px 7px 0px rgba(201, 201, 201, 0.9);
+  -moz-box-shadow: 1px 3px 7px 0px rgba(201, 201, 201, 0.9);
+  box-shadow: 1px 3px 7px 0px rgba(201, 201, 201, 0.9);
+
+  transition: transform 300ms ease;
+
+  &:hover {
+    transform: translateY(-10px);
+  }
+
+  .author {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ececec;
+
+    .info {
+      margin-left: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+
+      p {
+        color: var(--black);
+        margin: 0;
+      }
+
+      p:first-of-type {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 15px;
+        margin-bottom: 2px;
+      }
+
+      p:nth-of-type(2) {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ececec;
+
+    h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      color: var(--black);
+    }
+
+    .statistics {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+
+      p {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+        margin: 0;
+        padding: 3px 12px;
+        font-size: 14px;
+        border-radius: 100px;
+        color: #fff;
+
+        &:first-of-type {
+          background-color: var(--blue);
+        }
+
+        &:nth-of-type(2) {
+          background-color: var(--lightGreen);
+        }
+      }
+    }
+  }
+
+  .card-footer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+
+    p:first-of-type {
+      color: var(--black);
+      font-size: 14px;
+    }
+
+    p:nth-of-type(2) {
+      padding: 3px 10px;
+      border: 1px solid var(--blue);
+      color: var(--blue);
+      font-size: 14px;
+      border-radius: 100px;
+    }
+  }
 `;
 
 export const FiltersCtn = styled.div`
@@ -21,64 +183,5 @@ export const FiltersCtn = styled.div`
   .selects {
     display: flex;
     flex-direction: row;
-
-    .select {
-      position: relative;
-      min-width: 200px;
-
-      &:first-of-type {
-        margin-right: 15px;
-      }
-
-      svg {
-        position: absolute;
-        right: 12px;
-        top: calc(50% - 3px);
-        width: 10px;
-        height: 6px;
-        stroke-width: 2px;
-        stroke: #9098a9;
-        fill: none;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        pointer-events: none;
-      }
-
-      select {
-        -webkit-appearance: none;
-        padding: 7px 40px 7px 12px;
-        width: 100%;
-        border: 1px solid #e8eaed;
-        border-radius: 5px;
-        background: #fff;
-        box-shadow: 0 1px 3px -2px #9098a9;
-        cursor: pointer;
-        font-family: inherit;
-        font-size: 16px;
-        transition: all 150ms ease;
-
-        &:required:invalid {
-          color: #5a667f;
-        }
-
-        &:focus {
-          outline: none;
-          border-color: #07f;
-          box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.2);
-        }
-
-        &:hover + svg {
-          stroke: #07f;
-        }
-
-        option {
-          color: #223254;
-
-          &[value=''][disabled] {
-            display: none;
-          }
-        }
-      }
-    }
   }
 `;
