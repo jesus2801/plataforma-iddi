@@ -10,6 +10,11 @@ export interface ProfileImgProps {
   size: string;
 }
 
+export interface SearchProps {
+  placeholder: string;
+  width: string;
+}
+
 export interface NavProps {
   state: boolean;
 }

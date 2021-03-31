@@ -26,8 +26,12 @@ const ConfigButton = () => {
         <li>
           <ProfileImg size="70px" />
           <div className="info">
-            <p>{user!.displayName}</p>
-            <p>{user!.email}</p>
+            {user && (
+              <>
+                <p>{user!.displayName}</p>
+                <p>{user!.email}</p>
+              </>
+            )}
           </div>
         </li>
         <li className="option">Perfil</li>

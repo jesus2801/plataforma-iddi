@@ -18,7 +18,7 @@ const Nav = ({ state }: NavProps) => {
             <ProfileImg size="70px" />
 
             <div className="info">
-              <p>{personal!.displayName}</p>
+              <p>{personal && personal.displayName}</p>
 
               {publicInfo && (
                 <p>

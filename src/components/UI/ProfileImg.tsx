@@ -16,7 +16,7 @@ const ProfileImg: NextPage<ProfileImgProps> = ({ size, ...rest }) => {
     min-height: ${size};
     border-radius: 50%;
 
-    background-image: url(${user!.photoURL || '/static/icons/app/emptyPhoto.svg'});
+    background-image: url(${user && user.photoURL || '/static/icons/app/emptyPhoto.svg'});
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
