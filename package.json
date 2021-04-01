@@ -11,8 +11,10 @@
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^27.0.0",
     "@ckeditor/ckeditor5-react": "^3.0.2",
+    "@ckeditor/ckeditor5-upload": "^27.0.0",
     "@emotion/core": "^11.0.0",
     "@emotion/styled": "^11.1.5",
+    "@types/uuid": "^8.3.0",
     "firebase": "^8.3.1",
     "firebase-admin": "^9.6.0",
     "next": "latest",
@@ -24,7 +26,8 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "sass": "^1.32.8",
-    "sweetalert2": "^10.15.7"
+    "sweetalert2": "^10.15.7",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/node": "^12.12.21",

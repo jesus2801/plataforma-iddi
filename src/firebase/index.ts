@@ -6,6 +6,7 @@ import config from './config';
 // import * as admin from 'firebase-admin';
 
 import 'firebase/firestore';
+import 'firebase/storage';
 import 'firebase/auth';
 
 import { LoginState, SignupState } from '../interfaces/states';
@@ -16,6 +17,7 @@ export class Firebase {
   public db: app.firestore.Firestore;
   public auth: app.auth.Auth;
   public currentUser: app.User;
+  public storage: app.storage.Storage;
 
   constructor() {
     if (app.apps.length === 0) {
@@ -24,6 +26,7 @@ export class Firebase {
     this.db = app.firestore();
     this.auth = app.auth();
     this.currentUser = this.auth.currentUser!;
+    this.storage = app.storage();
   }
 
   //---------------------------------------------------------

@@ -4,7 +4,6 @@ export const MainCtn = styled.main`
   box-sizing: border-box;
   width: 93%;
   max-width: 800px;
-  height: 600px;
   margin: 100px auto 0 auto;
 
   background-color: #fff;
