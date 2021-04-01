@@ -3,10 +3,11 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { SelectProps } from '../../interfaces/props';
 
-const Select = ({ children, minWidth, ...rest }: SelectProps) => {
+const Select = ({ children, minWidth, width, ...rest }: SelectProps) => {
   const SelectCtn = styled.label`
     position: relative;
     min-width: ${minWidth};
+    width: ${width || 'auto'};
     z-index: 0;
 
     &:first-of-type {

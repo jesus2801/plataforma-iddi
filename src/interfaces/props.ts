@@ -11,6 +11,7 @@ export interface SvgProps {
 export interface SelectProps extends HTMLAttributes<HTMLSelectElement> {
   children: ReactNode;
   minWidth: string;
+  width?: string;
 }
 
 export interface ProfileImgProps {

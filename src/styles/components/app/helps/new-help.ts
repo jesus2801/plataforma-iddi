@@ -3,8 +3,8 @@ import styled from '@emotion/styled';
 export const MainCtn = styled.main`
   box-sizing: border-box;
   width: 93%;
-  max-width: 800px;
-  margin: 100px auto 0 auto;
+  max-width: 850px;
+  margin: 100px auto 30px auto;
 
   background-color: #fff;
   border-radius: 8px;
@@ -46,16 +46,33 @@ export const MainCtn = styled.main`
     }
   }
 
-  .title-input {
-    margin-top: 20px;
-    width: 100%;
-    font-size: 33px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-
-    color: var(--black);
-    border: none;
-    outline: none;
-    resize: none;
+  .select-categories {
+    margin: 30px 0;
   }
+`;
+
+export const TitleForumInput = styled.textarea`
+  margin-top: 20px;
+  width: 100%;
+  font-size: 33px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+
+  color: var(--black);
+  border: none;
+  outline: none;
+  resize: none;
+`;
+
+export const SubmitForumInput = styled.input`
+  width: 100%;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+
+  font-size: 18px;
+  background-color: var(--blue);
+  color: #fff;
+  cursor: pointer;
 `;

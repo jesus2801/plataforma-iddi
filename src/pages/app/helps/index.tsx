@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import React, { FormEvent, useState } from 'react';
+
 import Forum from '../../../components/app/forums/Forum';
 import AppLayout from '../../../components/AppLayout';
+import Categories from '../../../components/UI/Categories';
 import Search from '../../../components/UI/Search';
 import Select from '../../../components/UI/Select';
 import SelectSprite from '../../../components/UI/SelectSprite';
@@ -36,16 +38,7 @@ const Helps = () => {
 
           <div className="selects">
             <Select minWidth="200px" onChange={handleCategory} defaultValue={category}>
-              <option value="all">Cualquier categoría</option>
-              <option value="art">Arte y cultura</option>
-              <option value="natural-sciences">Ciencias naturales</option>
-              <option value="sports">Deportes</option>
-              <option value="economy">Economía</option>
-              <option value="epa">Emprendimento</option>
-              <option value="epa">Filosofía y lenguaje</option>
-              <option value="epa">Matemáticas</option>
-              <option value="epa">Tecnología</option>
-              <option value="epa">Religión y sociedad</option>
+              <Categories />
             </Select>
 
             <SelectSprite />
