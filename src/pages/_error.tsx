@@ -1,7 +1,7 @@
 import React from 'react';
 import Router from 'next/router';
 
-import { ErrorProps, StatusCode } from '../interfaces/index';
+import { ErrorProps, StatusCode } from '@interfaces/index';
 
 function Error({ statusCode }: StatusCode) {
   return (

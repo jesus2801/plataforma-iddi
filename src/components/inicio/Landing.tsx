@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 
-import { LandingCtn } from '../../styles/components/inicio/landing';
+import { LandingCtn } from '@styles/inicio/landing';
 
 import data from '../../data/indexPage';
-import Svg from '../UI/Svg';
+import Svg from '@cmpnts/UI/Svg';
 
 const Landing = () => {
   return (

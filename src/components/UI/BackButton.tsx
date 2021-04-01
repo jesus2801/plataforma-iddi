@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
-import { BackBtn } from '../../styles/components/UI';
+
+import { BackBtn } from '@styles/UI';
 
 const BackButton = () => {
   return (

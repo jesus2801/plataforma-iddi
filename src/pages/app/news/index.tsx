@@ -1,5 +1,6 @@
 import React from 'react';
-import AppLayout from '../../../components/AppLayout';
+import AppLayout from '@cmpnts/AppLayout';
+import withAuth from '@cmpnts/withAuth';
 
 const News = () => {
   return (
@@ -9,4 +10,4 @@ const News = () => {
   );
 };
 
-export default News;
+export default withAuth(News);

@@ -1,5 +1,6 @@
 import React from 'react';
-import Layout from '../../components/Layout';
+import Layout from '@cmpnts/Layout';
+import withAuth from '@cmpnts/withAuth';
 
 const NewPost = () => {
   return (
@@ -9,4 +10,4 @@ const NewPost = () => {
   );
 };
 
-export default NewPost;
+export default withAuth(NewPost);

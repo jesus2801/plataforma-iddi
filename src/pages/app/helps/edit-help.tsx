@@ -1,5 +1,6 @@
 import React from 'react';
-import Layout from '../../../components/Layout';
+import Layout from '@cmpnts/Layout';
+import withAuth from '@cmpnts/withAuth';
 
 const EditHelp = () => {
   return (
@@ -9,4 +10,4 @@ const EditHelp = () => {
   );
 };
 
-export default EditHelp;
+export default withAuth(EditHelp);

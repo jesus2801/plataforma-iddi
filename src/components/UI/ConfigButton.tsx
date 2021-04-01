@@ -1,10 +1,13 @@
 import React, { MouseEvent } from 'react';
 import { useSelector } from 'react-redux';
+
 import { AppCtx } from '../../interfaces/context';
-import { ConfigButtonCtn } from '../../styles/components/app/header';
+
+import { ConfigButtonCtn } from '@styles/app/header';
+
 import ProfileImg from './ProfileImg';
 
-import firebase from '../../firebase';
+import firebase from '@firebase/index';
 
 const ConfigButton = () => {
   const handleActive = (e: MouseEvent<HTMLImageElement>) => {

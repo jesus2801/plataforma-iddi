@@ -1,5 +1,5 @@
-import { AppActions, UserCtx } from '../../interfaces/context';
 import { INIT_GET_CURRENT_USER_INFO, SET_CURRENT_USER_INFO, USER_CHANGE } from '../types';
+import { AppActions, UserCtx } from '@interfaces/context';
 
 const initState: UserCtx = {
   personal: null,

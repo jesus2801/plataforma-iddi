@@ -1,5 +1,6 @@
 import React from 'react';
-import AppLayout from '../../../components/AppLayout';
+import AppLayout from '@cmpnts/AppLayout';
+import withAuth from '@cmpnts/withAuth';
 
 const Reviews = () => {
   return (
@@ -9,4 +10,4 @@ const Reviews = () => {
   );
 };
 
-export default Reviews;
+export default withAuth(Reviews);

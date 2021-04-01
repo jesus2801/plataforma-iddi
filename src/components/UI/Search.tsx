@@ -1,7 +1,7 @@
+import styled from '@emotion/styled';
 import React from 'react';
 
-import styled from '@emotion/styled';
-import { SearchProps } from '../../interfaces/props';
+import { SearchProps } from '@interfaces/props';
 import Svg from './Svg';
 
 const Search = ({ placeholder, width }: SearchProps) => {

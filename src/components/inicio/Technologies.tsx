@@ -1,9 +1,8 @@
 import React from 'react';
-import {
-  Technologie,
-  TechnologiesCtn,
-} from '../../styles/components/inicio/thecnologies';
-import Svg from '../UI/Svg';
+
+import { Technologie, TechnologiesCtn } from '@styles/inicio/thecnologies';
+
+import Svg from '@cmpnts/UI/Svg';
 
 const Technologies = () => {
   return (

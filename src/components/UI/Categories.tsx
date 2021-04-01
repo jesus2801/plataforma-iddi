@@ -8,11 +8,11 @@ const Categories = () => {
       <option value="natural-sciences">Ciencias naturales</option>
       <option value="sports">Deportes</option>
       <option value="economy">Economía</option>
-      <option value="epa">Emprendimento</option>
-      <option value="epa">Filosofía y lenguaje</option>
-      <option value="epa">Matemáticas</option>
-      <option value="epa">Tecnología</option>
-      <option value="epa">Religión y sociedad</option>
+      <option value="entr">Emprendimento</option>
+      <option value="philosophy">Filosofía y lenguaje</option>
+      <option value="math">Matemáticas</option>
+      <option value="technology">Tecnología</option>
+      <option value="society">Religión y sociedad</option>
     </>
   );
 };

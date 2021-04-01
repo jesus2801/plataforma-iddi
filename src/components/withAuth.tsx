@@ -1,6 +1,8 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
-import { AppCtx } from '../interfaces/context';
+import React from 'react';
+
+import { AppCtx } from '@interfaces/context';
+
 import Login from '../pages/auth/login';
 
 const withAuth = (Component: any) => {

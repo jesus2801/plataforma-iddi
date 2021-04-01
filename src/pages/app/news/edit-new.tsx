@@ -1,5 +1,6 @@
 import React from 'react';
-import Layout from '../../../components/Layout';
+import Layout from '@cmpnts/Layout';
+import withAuth from '@cmpnts/withAuth';
 
 const EditNew = () => {
   return (
@@ -9,4 +10,4 @@ const EditNew = () => {
   );
 };
 
-export default EditNew;
+export default withAuth(EditNew);

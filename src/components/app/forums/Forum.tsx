@@ -1,6 +1,8 @@
 import React from 'react';
-import { ForumCard } from '../../../styles/components/app/helps';
-import ProfileImg from '../../UI/ProfileImg';
+
+import ProfileImg from '@cmpnts/UI/ProfileImg';
+
+import { ForumCard } from '@styles/app/helps';
 
 const Forum = () => {
   return (

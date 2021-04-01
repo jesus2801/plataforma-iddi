@@ -1,11 +1,12 @@
-import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
+import { NextPage } from 'next';
 
-import { LayoutProps } from '../interfaces/props';
+import { LayoutProps } from '@interfaces/props';
+
+import useAuthentication from '@hooks/useAuthentication';
 
 import data from '../data/Layout';
-import useAuthentication from '../hooks/useAuthentication';
 
 const Layout: NextPage<LayoutProps> = ({ title, children }) => {
   title = `App name | ${title}`;

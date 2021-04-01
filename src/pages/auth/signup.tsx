@@ -1,18 +1,21 @@
-import React from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+import React from 'react';
 
-import Layout from '../../components/Layout';
-import BackButton from '../../components/UI/BackButton';
-import Svg from '../../components/UI/Svg';
+import Layout from '@cmpnts/Layout';
+import BackButton from '@cmpnts/UI/BackButton';
+import Svg from '@cmpnts/UI/Svg';
 
-import { isEmpty, isValidAppEmail } from '../../functions/validate';
-import useForm from '../../hooks/useForm';
-import { SignupState } from '../../interfaces/states';
+import { isEmpty, isValidAppEmail } from '@fcns/validate';
 
-import firebase from '../../firebase';
+import useForm from '@hooks/useForm';
 
-import { AuthCtn } from '../../styles/components/auth';
+import { SignupState } from '@interfaces/states';
+
+import firebase from '@firebase/index';
+
+import { AuthCtn } from '@styles/auth';
+
 import { emptyFields, invalidAppEmail, passLength } from '../../utils/errors';
 
 const Signup = () => {

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
-import { HeaderCtn, MenuIcon } from '../../styles/components/app/header';
-import ConfigButton from '../UI/ConfigButton';
-import ProfileImg from '../UI/ProfileImg';
+import { HeaderCtn, MenuIcon } from '@styles/app/header';
+import ConfigButton from '@cmpnts/UI/ConfigButton';
+import ProfileImg from '@cmpnts/UI/ProfileImg';
 
-import Notifications from '../UI/Notifications';
+import Notifications from '@cmpnts/UI/Notifications';
 import Nav from './Nav';
 
 const Header = () => {
@@ -29,6 +29,7 @@ const Header = () => {
 
         <div className="content row">
           <Notifications />
+          {/* FIXME: fix the error in this line :c */}
           <ProfileImg size="40px" className="image" />
           <ConfigButton />
         </div>

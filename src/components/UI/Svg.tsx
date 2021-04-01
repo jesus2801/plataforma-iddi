@@ -1,8 +1,8 @@
 import { NextPage } from 'next';
 import React from 'react';
 
-import { SvgProps } from '../../interfaces/props';
 import { objectError } from '../../utils/variables';
+import { SvgProps } from '@interfaces/props';
 
 const Svg: NextPage<SvgProps> = ({ path }) => {
   return (

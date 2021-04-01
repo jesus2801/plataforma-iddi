@@ -1,6 +1,7 @@
+import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+
 import {
   changeUser,
   clearUserInfo,

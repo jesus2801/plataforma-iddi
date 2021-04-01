@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { SelectProps } from '@interfaces/props';
 import styled from '@emotion/styled';
-import { SelectProps } from '../../interfaces/props';
 
 const Select = ({ children, minWidth, width, ...rest }: SelectProps) => {
   const SelectCtn = styled.label`

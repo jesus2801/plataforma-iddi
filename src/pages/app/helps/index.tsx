@@ -1,14 +1,15 @@
-import Link from 'next/link';
 import React, { FormEvent, useState } from 'react';
+import Link from 'next/link';
 
-import Forum from '../../../components/app/forums/Forum';
-import AppLayout from '../../../components/AppLayout';
-import Categories from '../../../components/UI/Categories';
-import Search from '../../../components/UI/Search';
-import Select from '../../../components/UI/Select';
-import SelectSprite from '../../../components/UI/SelectSprite';
+import SelectSprite from '@cmpnts/UI/SelectSprite';
+import Categories from '@cmpnts/UI/Categories';
+import Forum from '@cmpnts/app/forums/Forum';
+import AppLayout from '@cmpnts/AppLayout';
+import withAuth from '@cmpnts/withAuth';
+import Search from '@cmpnts/UI/Search';
+import Select from '@cmpnts/UI/Select';
 
-import { FiltersCtn, MainForumsCtn } from '../../../styles/components/app/helps';
+import { FiltersCtn, MainForumsCtn } from '@styles/app/helps';
 
 const Helps = () => {
   const [category, setCategory] = useState('all');
@@ -70,4 +71,4 @@ const Helps = () => {
   );
 };
 
-export default Helps;
+export default withAuth(Helps);

@@ -1,5 +1,6 @@
-import app from 'firebase/app';
 import type { NextRouter } from 'next/router';
+import app from 'firebase/app';
+import Swal from 'sweetalert2';
 
 import config from './config';
 
@@ -9,9 +10,8 @@ import 'firebase/firestore';
 import 'firebase/storage';
 import 'firebase/auth';
 
-import { LoginState, SignupState } from '../interfaces/states';
-import Swal from 'sweetalert2';
-import { handleLoading } from '../functions';
+import { LoginState, SignupState } from '@interfaces/states';
+import { handleLoading } from '@fcns/index';
 
 export class Firebase {
   public db: app.firestore.Firestore;
@@ -23,6 +23,7 @@ export class Firebase {
     if (app.apps.length === 0) {
       app.initializeApp(config);
     }
+
     this.db = app.firestore();
     this.auth = app.auth();
     this.currentUser = this.auth.currentUser!;

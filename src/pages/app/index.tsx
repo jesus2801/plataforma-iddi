@@ -1,8 +1,8 @@
 import React from 'react';
 
-import AppLayout from '../../components/AppLayout';
+import AppLayout from '@cmpnts/AppLayout';
 
-import withAuth from '../../components/withAuth';
+import withAuth from '@cmpnts/withAuth';
 
 const index = () => {
   return (

@@ -1,23 +1,26 @@
-import Link from 'next/link';
-import React from 'react';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import Swal from 'sweetalert2';
+import Link from 'next/link';
+import React from 'react';
 
-import Layout from '../../components/Layout';
-import BackButton from '../../components/UI/BackButton';
-import Svg from '../../components/UI/Svg';
+import Layout from '@cmpnts/Layout';
+import BackButton from '@cmpnts/UI/BackButton';
+import Svg from '@cmpnts/UI/Svg';
 
-import firebase from '../../firebase';
-import { isEmpty, isValidAppEmail } from '../../functions/validate';
+import firebase from '@firebase/index';
+
+import { isEmpty, isValidAppEmail } from '@fcns/validate';
+import { handleLoading } from '@fcns/index';
+
+import { LoginState } from '@interfaces/states';
+import { AppCtx } from '@interfaces/context';
+
+import useForm from '@hooks/useForm';
+
+import { AuthCtn } from '@styles/auth';
+
 import { emptyFields, invalidAppEmail, passLength } from '../../utils/errors';
-import { handleLoading } from '../../functions';
-
-import useForm from '../../hooks/useForm';
-import { LoginState } from '../../interfaces/states';
-
-import { AuthCtn } from '../../styles/components/auth';
-import { useSelector } from 'react-redux';
-import { AppCtx } from '../../interfaces/context';
 
 const Login = () => {
   const initState: LoginState = {

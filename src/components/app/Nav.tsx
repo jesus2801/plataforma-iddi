@@ -1,11 +1,12 @@
+import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { AppCtx } from '../../interfaces/context';
-import { NavProps } from '../../interfaces/props';
 
-import { NavBar, DarkShade } from '../../styles/components/app/nav';
-import ProfileImg from '../UI/ProfileImg';
+import { AppCtx } from '@interfaces/context';
+import { NavProps } from '@interfaces/props';
+
+import { NavBar, DarkShade } from '@styles/app/nav';
+import ProfileImg from '@cmpnts/UI/ProfileImg';
 
 const Nav = ({ state }: NavProps) => {
   const { personal, publicInfo } = useSelector((state: AppCtx) => state.user);

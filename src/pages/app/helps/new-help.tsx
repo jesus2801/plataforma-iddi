@@ -1,28 +1,29 @@
 import React, { FormEvent, useState } from 'react';
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+import Swal from 'sweetalert2';
 
-import AppLayout from '../../../components/AppLayout';
-import useCKEditor from '../../../hooks/useCKEditor';
-import ProfileImg from '../../../components/UI/ProfileImg';
+import { MainCtn, SubmitForumInput, TitleForumInput } from '@styles/app/helps/new-help';
 
-import {
-  MainCtn,
-  SubmitForumInput,
-  TitleForumInput,
-} from '../../../styles/components/app/helps/new-help';
+import useCKEditor from '@hooks/useCKEditor';
 
-import Select from '../../../components/UI/Select';
-import SelectSprite from '../../../components/UI/SelectSprite';
-import Categories from '../../../components/UI/Categories';
+import SelectSprite from '@cmpnts/UI/SelectSprite';
+import ProfileImg from '@cmpnts/UI/ProfileImg';
+import Categories from '@cmpnts/UI/Categories';
+import AppLayout from '@cmpnts/AppLayout';
+import Select from '@cmpnts/UI/Select';
 
-import { CustomUpload } from '../../../functions';
-import { returnImageRemoved } from '../../../functions/CKEditor';
-import { CKEditorImagesState } from '../../../interfaces/states';
+import { returnImageRemoved } from '@fcns/CKEditor';
+import { CustomUpload } from '@fcns/CKEditor';
+import { isEmpty } from '@fcns/validate';
 
-import firebase from '../../../firebase';
-import { AppCtx } from '../../../interfaces/context';
-import { isEmpty } from '../../../functions/validate';
+import firebase from '@firebase/index';
+
+import { HelpForum, ForumCategory } from '@interfaces/index';
+import { CKEditorImagesState } from '@interfaces/states';
+import { AppCtx } from '@interfaces/context';
+
+import withAuth from '@cmpnts/withAuth';
 
 //---------------------------------------------------------------
 //                 GLOBAL IMPORTS - PAGE COMPONENT
@@ -36,10 +37,14 @@ const NewHelp = () => {
   const [editor, setEditor] = useState(null as any);
   const [images, setImages] = useState([] as CKEditorImagesState[]);
 
+  //state of form data
   const [form, setForm] = useState({
     title: '',
     category: '',
   });
+
+  //router for redirect user after upload forum
+  const router = useRouter();
 
   //destructurintg form values
   const { title, category } = form;
@@ -82,7 +87,8 @@ const NewHelp = () => {
   };
 
   //when user submit the form
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    //if user submit the form before publicInfo is download
     if (!publicInfo) {
       Swal.fire(
         '¡Error!',
@@ -92,14 +98,51 @@ const NewHelp = () => {
       return;
     }
 
+    //get editor data
     const data: string = editor.getData();
 
+    //show error if some data is empty
     if (isEmpty(data, title, category)) {
       Swal.fire('¡Error!', 'Porfavor rellene correctamente todos los campos', 'error');
       return;
     }
 
-    //send data to server
+    //build the forum to send of server
+    const forum: HelpForum = {
+      author: firebase.db.collection('users').doc(publicInfo.id),
+      title: title,
+      content: data,
+      category: category as ForumCategory,
+      votes: [],
+      comments: [],
+      answers: [],
+      images: images,
+      date: Date.now(),
+    };
+
+    try {
+      //upload the forum
+      await firebase.db.collection('forums').add(forum);
+
+      //success upload
+      Swal.fire({
+        title: '¡Foro subido!',
+        text: `¡Felicidades!, hemos subido tu foro
+        exitosamente, te invitamos a disfrutar de él`,
+        icon: 'success',
+        didClose: () => {
+          router.push('/app/helps');
+        },
+      });
+    } catch (e) {
+      //failed upload
+      Swal.fire(
+        '¡Error!',
+        `Lo sentimos, no hemos podido subir tu foro, 
+         porfavor intenta más tarde`,
+        'error',
+      );
+    }
   };
 
   // render data
@@ -184,4 +227,4 @@ const NewHelp = () => {
   );
 };
 
-export default NewHelp;
+export default withAuth(NewHelp);

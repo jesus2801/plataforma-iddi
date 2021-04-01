@@ -1,13 +1,16 @@
-import { NextRouter } from 'next/router';
-import { INIT_GET_CURRENT_USER_INFO, SET_CURRENT_USER_INFO, USER_CHANGE } from '../types';
 import { AnyAction, Dispatch } from 'redux';
+import { NextRouter } from 'next/router';
 import Swal from 'sweetalert2';
 
-import firebase from '../../firebase';
+import { INIT_GET_CURRENT_USER_INFO, SET_CURRENT_USER_INFO, USER_CHANGE } from '../types';
 
-import { handleLoading } from '../../functions';
-import { PublicUserInfo, User } from '../../interfaces';
+import firebase from '@firebase/index';
 
+import { PublicUserInfo, User } from '@interfaces/index';
+
+import { handleLoading } from '@fcns/index';
+
+// when users credentials change
 export function changeUser(user: User) {
   return (dispatch: Dispatch) => {
     dispatch(initChangeUser(user));
@@ -19,6 +22,7 @@ const initChangeUser = (user: User): AnyAction => ({
   payload: user,
 });
 
+// get yhe public user info from firestore
 export function getPublicUserInfo(id: string, router: NextRouter) {
   return async (dispatch: Dispatch) => {
     handleLoading(true);
@@ -59,6 +63,7 @@ const setUserInfo = (data: PublicUserInfo): AnyAction => ({
   payload: data,
 });
 
+//clear the user info
 export function clearUserInfo() {
   return (dispatch: Dispatch) => {
     dispatch(clearInfo());
