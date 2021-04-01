@@ -9,3 +9,8 @@ export interface SignupState {
   password: string;
   password2: string;
 }
+
+export interface CKEditorImagesState {
+  url: string;
+  rute: string;
+}

@@ -18,10 +18,14 @@ export const handleLoading = (state: boolean, title?: string): void => {
   Swal.close();
 };
 
-let uploadTask: fb.storage.UploadTask | null;
-
 export class CustomUpload {
-  constructor(private loader: any, private handleImages: any) {}
+  private uploadTask: fb.storage.UploadTask | null;
+  private child: null | fb.storage.Reference;
+
+  constructor(private loader: any, private handleImages: any) {
+    this.uploadTask = null;
+    this.child = null;
+  }
 
   public upload() {
     return this.loader.file.then(async (file: File) => {
@@ -31,16 +35,19 @@ export class CustomUpload {
           'El tamaño máximo para imagenes en los foros son de 3MB',
           'error',
         );
+
         this.loader.abort();
         return;
       }
+
       return new Promise((resolve) => {
-        const rute = `forums/${v4()}`;
-        uploadTask = firebase.storage.ref().child(rute).put(file);
-        uploadTask.on(
+        this.child = firebase.storageRef.child(`forums/${v4()}`);
+        this.uploadTask = this.child.put(file);
+
+        this.uploadTask.on(
           'state_changed',
           (snapshot) => {
-            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             this.loader.uploadedPercent = progress;
           },
           //on error
@@ -50,14 +57,19 @@ export class CustomUpload {
               'Lo sentimos, ha ocurrido un error en la subida de tu imagen, porfavor intenta más tarde',
               'error',
             );
+
             this.loader.uploaded = false;
             this.loader.abort();
           },
           //on success
           () => {
-            this.handleImages(rute);
             this.loader.uploaded = true;
-            uploadTask!.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+            this.uploadTask!.snapshot.ref.getDownloadURL().then((downloadURL) => {
+              this.handleImages({
+                rute: this.child!.fullPath,
+                url: downloadURL,
+              });
+
               resolve({ default: downloadURL });
             });
           },
@@ -67,6 +79,6 @@ export class CustomUpload {
   }
 
   public abort() {
-    uploadTask!.cancel();
+    this.uploadTask!.cancel();
   }
 }

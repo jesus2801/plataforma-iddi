@@ -17,7 +17,7 @@ export class Firebase {
   public db: app.firestore.Firestore;
   public auth: app.auth.Auth;
   public currentUser: app.User;
-  public storage: app.storage.Storage;
+  public storageRef: app.storage.Reference;
 
   constructor() {
     if (app.apps.length === 0) {
@@ -26,7 +26,7 @@ export class Firebase {
     this.db = app.firestore();
     this.auth = app.auth();
     this.currentUser = this.auth.currentUser!;
-    this.storage = app.storage();
+    this.storageRef = app.storage().ref();
   }
 
   //---------------------------------------------------------

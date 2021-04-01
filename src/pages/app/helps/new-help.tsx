@@ -1,22 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import AppLayout from '../../../components/AppLayout';
-import useCKEditor from '../../../components/UI/Editor';
+import useCKEditor from '../../../hooks/useCKEditor';
 import ProfileImg from '../../../components/UI/ProfileImg';
 import { CustomUpload } from '../../../functions';
 import { MainCtn } from '../../../styles/components/app/helps/new-help';
+import { returnImageRemoved } from '../../../functions/CKEditor';
+import { CKEditorImagesState } from '../../../interfaces/states';
+
+import firebase from '../../../firebase';
 
 const NewHelp = () => {
   const { editorLoaded, CKEditor, ClassicEditor } = useCKEditor();
 
   const [editor, setEditor] = useState(null as any);
-  const [images, setImages] = useState([] as string[]);
+  const [images, setImages] = useState([] as CKEditorImagesState[]);
 
-  const handleImages = (newValue: string) => {
-    console.log(images);
-    setImages([...images, newValue]);
+  const handleImages = (newValue: CKEditorImagesState) => {
+    setImages((prevValue) => [...prevValue, newValue]);
   };
 
-  // console.log(images);
+  const deleteImage = async (rute: string) => {
+    try {
+      await firebase.storageRef.child(rute).delete();
+
+      setImages((prevValue) => {
+        return prevValue.filter((value) => value.rute === rute);
+      });
+    } catch (e) {
+      return;
+    }
+  };
 
   return (
     <AppLayout title="Nuevo curso o repaso">
@@ -44,6 +57,24 @@ const NewHelp = () => {
             }}
             onReady={(editor: any) => {
               setEditor(editor);
+
+              editor.model.document.on('change:data', (event: any) => {
+                const imagesRemoved = returnImageRemoved(event);
+
+                if (imagesRemoved) {
+                  const imgRmved: string = imagesRemoved[0];
+
+                  setImages((prevValue) => {
+                    for (let i = 0, n = prevValue.length; i < n; i++) {
+                      if (prevValue[i].url === imgRmved) {
+                        deleteImage(prevValue[i].rute);
+                      }
+                    }
+                    return prevValue;
+                  });
+                }
+              });
+
               editor.plugins.get('FileRepository').createUploadAdapter = (
                 loader: any,
               ) => {
@@ -55,14 +86,7 @@ const NewHelp = () => {
           <p>Cargando editor...</p>
         )}
 
-        {/* const data = await toBase64(file);
-      // const data = new Blob([file], { type: file.type });
-      console.log(data);
-      return {
-        default: data,
-      }; */}
-
-        <button onClick={() => console.log(editor.getData().length)}>console data</button>
+        <button onClick={() => console.log(editor.getData())}>console data</button>
       </MainCtn>
     </AppLayout>
   );
