@@ -1,4 +1,5 @@
-import React, { FocusEvent, FormEvent, KeyboardEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 
 import SelectSprite from '@cmpnts/UI/SelectSprite';
@@ -11,10 +12,10 @@ import Select from '@cmpnts/UI/Select';
 
 import { FiltersCtn, MainForumsCtn } from '@styles/app/helps';
 
-import { ForumCategory, HelpForumDoc } from '@interfaces/index';
+import { ForumCategory } from '@interfaces/index';
 import { ForumsFilter } from '@interfaces/states';
-import { useDispatch, useSelector } from 'react-redux';
 import { AppCtx } from '@interfaces/context';
+
 import { getForums } from 'context/actions/forums.actions';
 
 const Helps = () => {
@@ -41,6 +42,7 @@ const Helps = () => {
     setFilter(e!.currentTarget.value as ForumsFilter);
   };
 
+  //search forum with title and the actual filters
   const initSearch = () => {
     const input = document.getElementById('search-input') as HTMLInputElement;
     const vl = input.value;
@@ -51,12 +53,11 @@ const Helps = () => {
   //get forums with the actual filters
   useEffect(() => {
     if (publicInfo) {
-      const input = document.getElementById('search-input') as HTMLInputElement;
-      const vl = input.value;
-      dispatch(getForums(category, filter, publicInfo.docId, vl));
+      dispatch(getForums(category, filter, publicInfo.docId, ''));
     }
   }, [category, filter, publicInfo]);
 
+  //render data
   return (
     <AppLayout title="Cursos y repasos">
       <MainForumsCtn>

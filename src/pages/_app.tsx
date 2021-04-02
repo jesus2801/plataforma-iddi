@@ -5,6 +5,7 @@ import store from '../context/store';
 
 import 'normalize.css';
 import '../styles/global/global.scss';
+import '../styles/global/ckeditor.scss';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

@@ -151,24 +151,29 @@ export const ForumCard = styled.div`
   }
 
   .card-footer {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     justify-content: space-around;
-
-    p:first-of-type {
-      color: var(--black);
-      font-size: 14px;
-    }
-
     p:nth-of-type(2) {
-      padding: 3px 10px;
-      border: 1px solid var(--blue);
-      color: var(--blue);
-      font-size: 14px;
-      border-radius: 100px;
+      font-size: 13px;
     }
+  }
+`;
+
+export const ForumFooter = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  p:first-of-type {
+    color: var(--black);
+    font-size: 14px;
+  }
+
+  p:nth-of-type(2) {
+    padding: 3px 10px;
+    border: 1px solid var(--blue);
+    color: var(--blue);
+    border-radius: 100px;
   }
 `;
 

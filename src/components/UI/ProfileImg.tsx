@@ -1,12 +1,11 @@
 import { useSelector } from 'react-redux';
 import styled from '@emotion/styled';
-import { NextPage } from 'next';
 import React from 'react';
 
 import { ProfileImgProps } from '@interfaces/props';
 import { AppCtx } from '@interfaces/context';
 
-const ProfileImg: NextPage<ProfileImgProps> = ({ size, url, ...rest }) => {
+const ProfileImg = ({ size, url, ...rest }: ProfileImgProps) => {
   const user = useSelector((state: AppCtx) => state.user.personal);
 
   const ProfileCtn = styled.div`
@@ -16,7 +15,7 @@ const ProfileImg: NextPage<ProfileImgProps> = ({ size, url, ...rest }) => {
     min-height: ${size};
     border-radius: 50%;
 
-    background-image: url(${url ? url : (user && user.photoURL) || '/static/icons/app/emptyPhoto.svg'});
+    background-image: url(${url ? url : (user && user.photoURL) || '/static/icons/app/emptyPhoto.webp'});
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;

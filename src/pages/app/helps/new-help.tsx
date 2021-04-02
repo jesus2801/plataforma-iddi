@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import Swal from 'sweetalert2';
 
-import { MainCtn, SubmitForumInput, TitleForumInput } from '@styles/app/helps/new-help';
+import { MainCtn, SubmitForumInput, TitleForumInput } from '@styles/app/helps/helps';
 
 import useCKEditor from '@hooks/useCKEditor';
 
@@ -117,7 +117,6 @@ const NewHelp = () => {
       category: category as ForumCategory,
       votes: [],
       votes_count: 0,
-      comments: [],
       answers: [],
       images: images,
       date: Date.now(),

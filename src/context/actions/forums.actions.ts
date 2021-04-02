@@ -1,12 +1,19 @@
 import { AnyAction, Dispatch } from 'redux';
 
-import { ForumCategory, HelpForumDoc } from '@interfaces/index';
+import { ForumCategory, HelpForum, HelpForumDoc } from '@interfaces/index';
 import { ForumsFilter } from '@interfaces/states';
 
 import firebase from '@firebase/index';
 
 import fb from 'firebase/app';
-import { INIT_SET_FORUMS, SET_FORUMS } from 'context/types';
+import {
+  INIT_SET_FORUMS,
+  SET_FORUMS,
+  INIT_GET_SELECTED_FORUM,
+  SET_SELECTED_FORUM,
+  SET_SELECTED_FORUM_REF,
+} from 'context/types';
+import { NextRouter } from 'next/router';
 
 // get the forums with the specific filters
 export function getForums(
@@ -23,7 +30,7 @@ export function getForums(
 
     //build the category query
     switch (category) {
-      case 'all': 
+      case 'all':
         query = collectionRef;
         break;
 
@@ -90,18 +97,22 @@ export function getForums(
         break;
     }
 
-    const querySnapshot: fb.firestore.QuerySnapshot<fb.firestore.DocumentData> = await query.get();
-    let forums: HelpForumDoc[] = [];
+    try {
+      const querySnapshot: fb.firestore.QuerySnapshot<fb.firestore.DocumentData> = await query.get();
+      let forums: HelpForumDoc[] = [];
 
-    for (let i = 0, n = querySnapshot.docs.length; i < n; i++) {
-      const forum = {
-        ...querySnapshot.docs[i].data(),
-        id: querySnapshot.docs[i].id,
-      };
-      forums.push(forum as HelpForumDoc);
+      for (let i = 0, n = querySnapshot.docs.length; i < n; i++) {
+        const forum = {
+          ...querySnapshot.docs[i].data(),
+          id: querySnapshot.docs[i].id,
+        };
+        forums.push(forum as HelpForumDoc);
+      }
+
+      dispatch(setForums(forums));
+    } catch (e) {
+      console.log(e);
     }
-
-    dispatch(setForums(forums));
   };
 }
 
@@ -112,4 +123,42 @@ const initSetForums = (): AnyAction => ({
 const setForums = (forums: HelpForumDoc[]): AnyAction => ({
   type: SET_FORUMS,
   payload: forums,
+});
+
+//get selected forum
+export function getSelectedForum(id: string, router: NextRouter) {
+  return async (dispatch: Dispatch) => {
+    dispatch(initGetSelectedForum());
+
+    try {
+      const ref = firebase.db.collection('forums').doc(id);
+
+      const snapShot = await ref.get();
+
+      if (!snapShot.exists) {
+        router.push('/');
+      }
+
+      dispatch(setSelectedForum(snapShot.data() as HelpForum));
+      dispatch(setSelectedForumRef(ref));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+}
+
+const initGetSelectedForum = (): AnyAction => ({
+  type: INIT_GET_SELECTED_FORUM,
+});
+
+const setSelectedForum = (forum: HelpForum): AnyAction => ({
+  type: SET_SELECTED_FORUM,
+  payload: forum,
+});
+
+const setSelectedForumRef = (
+  ref: fb.firestore.DocumentReference<fb.firestore.DocumentData>,
+): AnyAction => ({
+  type: SET_SELECTED_FORUM_REF,
+  payload: ref,
 });

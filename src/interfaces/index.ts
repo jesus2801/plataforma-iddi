@@ -27,10 +27,14 @@ export interface PublicUserInfo {
 
 type FirebaseDocReference = firebase.firestore.DocumentReference<firebase.firestore.DocumentData>;
 
-interface ForumComment {
+export interface ForumComment {
   author: FirebaseDocReference;
   comment: string;
   date: number;
+}
+
+export interface ForumCommentLayout extends ForumComment {
+  id: string;
 }
 
 interface ForumAsnwers {
@@ -59,7 +63,7 @@ export interface HelpForum {
   category: ForumCategory;
   votes: string[];
   votes_count: number;
-  comments: ForumComment[];
+  comments?: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>;
   answers: ForumAsnwers[];
   date: number;
   images: CKEditorImagesState[];

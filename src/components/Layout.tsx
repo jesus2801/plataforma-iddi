@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
-import { NextPage } from 'next';
 
 import { LayoutProps } from '@interfaces/props';
 
@@ -8,7 +7,7 @@ import useAuthentication from '@hooks/useAuthentication';
 
 import data from '../data/Layout';
 
-const Layout: NextPage<LayoutProps> = ({ title, children }) => {
+const Layout = ({ title, children }: LayoutProps) => {
   title = `App name | ${title}`;
 
   const [actualUrl, setActualUrl] = useState('');

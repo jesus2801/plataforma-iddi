@@ -1,8 +1,13 @@
 import { ReactNode, HTMLAttributes } from 'react';
-import { HelpForumDoc } from '.';
+import { ForumCommentLayout, HelpForumDoc } from '.';
 
 export interface LayoutProps {
   title: string;
+  children: ReactNode;
+}
+
+export interface ForumCommentProps {
+  data: ForumCommentLayout;
 }
 
 export interface SvgProps {
@@ -24,7 +29,7 @@ export interface ProfileImgProps {
   url?: string;
 }
 
-export interface SearchProps extends HTMLAttributes<HTMLElement> {
+export interface SearchProps extends HTMLAttributes<HTMLInputElement> {
   placeholder: string;
   width: string;
 }
