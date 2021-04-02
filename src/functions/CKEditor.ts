@@ -1,6 +1,7 @@
 import firebase from '@firebase/index';
 import Swal from 'sweetalert2';
 import fb from 'firebase/app';
+import Rollbar from 'rollbar';
 import { v4 } from 'uuid';
 
 export function returnImageRemoved(event: any): null | string[] {
@@ -58,7 +59,7 @@ export class CustomUpload {
   private uploadTask: fb.storage.UploadTask | null;
   private child: null | fb.storage.Reference;
 
-  constructor(private loader: any, private handleImages: any) {
+  constructor(private loader: any, private handleImages: any, private rollbar: Rollbar) {
     this.uploadTask = null;
     this.child = null;
   }
@@ -87,13 +88,14 @@ export class CustomUpload {
             this.loader.uploadedPercent = progress;
           },
           //on error
-          () => {
+          (e) => {
             Swal.fire(
               '¡Error!',
               'Lo sentimos, ha ocurrido un error en la subida de tu imagen, porfavor intenta más tarde',
               'error',
             );
 
+            this.rollbar.error(e, 'error subiendo imagen de un foro');
             this.loader.uploaded = false;
             this.loader.abort();
           },

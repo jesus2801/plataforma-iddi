@@ -2,6 +2,7 @@ import { HelpForumDoc, PublicUserInfo, User } from './index';
 import type { Action } from 'redux';
 
 import fb from 'firebase/app';
+import Rollbar from 'rollbar';
 
 export interface AppActions extends Action {
   payload: any;
@@ -10,6 +11,7 @@ export interface AppActions extends Action {
 export interface UserCtx {
   personal: User;
   publicInfo: null | PublicUserInfo;
+  rollbar: Rollbar;
 }
 
 export interface ForumsCtx {

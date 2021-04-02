@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import NoSSR from 'react-no-ssr';
+import NoSSR from '@mpth/react-no-ssr';
 import Swal from 'sweetalert2';
 
 import firebase from '@firebase/index';
@@ -38,7 +38,7 @@ const Help = () => {
   //extracting the selected forum in the global store
   const {
     forums: { selectedForum, selectedForumRef },
-    user: { publicInfo },
+    user: { publicInfo, rollbar },
   } = useSelector((state: AppCtx) => state);
 
   //next router
@@ -55,7 +55,7 @@ const Help = () => {
     if (query) {
       if (!query.id) router.push('/');
 
-      dispatch(getSelectedForum(query.id as string, router));
+      dispatch(getSelectedForum(query.id as string, router, rollbar));
     }
   }, [query]);
 
@@ -68,7 +68,14 @@ const Help = () => {
           setAuthor(a.data() as PublicUserInfo);
         })
         .catch((e) => {
-          console.log(e);
+          rollbar.error(e, `no se pudo obtener la información del creador de un foro`);
+          Swal.fire(
+            '¡Error!',
+            `Lo sentimos, ha ocurrido un error extrayendo
+            la información del usuario creador del foro, 
+            por favor intenta más tarde`,
+            'error',
+          );
         });
     }
   }, [selectedForum]);
@@ -98,7 +105,14 @@ const Help = () => {
           setForumComments(comments);
         })
         .catch((e) => {
-          console.log(e);
+          rollbar.error(e, 'error al obtener los comentarios de un foro');
+          Swal.fire(
+            '¡Error!',
+            `Lo sentimos ha ocurrido un error
+            al obtener los comentarios de este
+            foro, por favor intenta más tarde`,
+            'error',
+          );
         });
     }
   }, [selectedForumRef]);
@@ -138,6 +152,7 @@ const Help = () => {
       setComment('');
     } catch (e) {
       handleLoading(false);
+      rollbar.error(e, 'error al comentar en un foro');
       Swal.fire(
         '¡Error!',
         `Losentimos, no hemos podido agregar su 

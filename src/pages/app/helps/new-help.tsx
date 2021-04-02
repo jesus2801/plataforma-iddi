@@ -3,7 +3,12 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import Swal from 'sweetalert2';
 
-import { MainCtn, SubmitForumInput, TitleForumInput } from '@styles/app/helps/helps';
+import {
+  ForumCtn,
+  MainCtn,
+  SubmitForumInput,
+  TitleForumInput,
+} from '@styles/app/helps/helps';
 
 import useCKEditor from '@hooks/useCKEditor';
 
@@ -51,7 +56,7 @@ const NewHelp = () => {
   const { title, category } = form;
 
   //destructuring public user info form main store
-  const { publicInfo } = useSelector((state: AppCtx) => state.user);
+  const { publicInfo, rollbar } = useSelector((state: AppCtx) => state.user);
 
   //handle images when user put a new image on the editor
   const handleImages = (newValue: CKEditorImagesState) => {
@@ -75,16 +80,18 @@ const NewHelp = () => {
   };
 
   // when user delete a image from the editor
-  const deleteImage = async (rute: string) => {
-    try {
-      await firebase.storageRef.child(rute).delete();
-
-      setImages((prevValue) => {
-        return prevValue.filter((value) => value.rute !== rute);
+  const deleteImage = (rute: string) => {
+    firebase.storageRef
+      .child(rute)
+      .delete()
+      .then(() => {
+        setImages((prevValue) => {
+          return prevValue.filter((value) => value.rute !== rute);
+        });
+      })
+      .catch((e) => {
+        console.log(e);
       });
-    } catch (e) {
-      return;
-    }
   };
 
   //when user submit the form
@@ -156,81 +163,84 @@ const NewHelp = () => {
   // render data
   return (
     <AppLayout title="Nuevo curso o repaso">
-      <MainCtn>
-        <div className="author">
-          <ProfileImg size="110px" />
-          <div className="info">
-            {publicInfo && (
-              <>
-                <p>
-                  {publicInfo.nickname} <span>- ({publicInfo.name})</span>
-                </p>
-                <p>
-                  {publicInfo.rol}
-                  {publicInfo.grade && ` - ${publicInfo.grade}° grado`}
-                </p>
-              </>
-            )}
+      <ForumCtn>
+        <MainCtn>
+          <div className="author">
+            <ProfileImg size="110px" />
+            <div className="info">
+              {publicInfo && (
+                <>
+                  <p>
+                    {publicInfo.nickname} <span>- ({publicInfo.name})</span>
+                  </p>
+                  <p>
+                    {publicInfo.rol}
+                    {publicInfo.grade && ` - ${publicInfo.grade}° grado`}
+                  </p>
+                </>
+              )}
+            </div>
           </div>
-        </div>
 
-        <TitleForumInput
-          className="title-input"
-          placeholder="Ingresa el titulo del foro"
-          onInput={handleTitleInput}
-          value={title}
-          rows={2}
-        ></TitleForumInput>
+          <TitleForumInput
+            className="title-input"
+            placeholder="Ingresa el titulo del foro"
+            onInput={handleTitleInput}
+            value={title}
+            rows={2}
+          ></TitleForumInput>
 
-        {editorLoaded && ClassicEditor ? (
-          <CKEditor
-            editor={ClassicEditor.default}
-            config={{
-              placeholder: 'En este editor puedes escribir todo el contenido de tu foro',
-            }}
-            onReady={(editor: any) => {
-              setEditor(editor);
+          {editorLoaded && ClassicEditor ? (
+            <CKEditor
+              editor={ClassicEditor.default}
+              config={{
+                placeholder:
+                  'En este editor puedes escribir todo el contenido de tu foro',
+              }}
+              onReady={(editor: any) => {
+                setEditor(editor);
 
-              editor.model.document.on('change:data', (event: any) => {
-                const imagesRemoved = returnImageRemoved(event);
+                editor.model.document.on('change:data', (event: any) => {
+                  const imagesRemoved = returnImageRemoved(event);
 
-                if (imagesRemoved) {
-                  const imgRmved: string = imagesRemoved[0];
+                  if (imagesRemoved) {
+                    const imgRmved: string = imagesRemoved[0];
 
-                  setImages((prevValue) => {
-                    for (let i = 0, n = prevValue.length; i < n; i++) {
-                      if (prevValue[i].url === imgRmved) {
-                        deleteImage(prevValue[i].rute);
+                    setImages((prevValue) => {
+                      for (let i = 0, n = prevValue.length; i < n; i++) {
+                        if (prevValue[i].url === imgRmved) {
+                          deleteImage(prevValue[i].rute);
+                        }
                       }
-                    }
-                    return prevValue;
-                  });
-                }
-              });
+                      return prevValue;
+                    });
+                  }
+                });
 
-              editor.plugins.get('FileRepository').createUploadAdapter = (
-                loader: any,
-              ) => {
-                return new CustomUpload(loader, handleImages);
-              };
-            }}
-          />
-        ) : (
-          <p>Cargando editor...</p>
-        )}
+                editor.plugins.get('FileRepository').createUploadAdapter = (
+                  loader: any,
+                ) => {
+                  return new CustomUpload(loader, handleImages, rollbar);
+                };
+              }}
+            />
+          ) : (
+            <p>Cargando editor...</p>
+          )}
 
-        <Select
-          minWidth="200px"
-          onChange={handleChangeSelect}
-          defaultValue={category}
-          className="select-categories"
-        >
-          <Categories />
-        </Select>
-        <SelectSprite />
+          <Select
+            minWidth="200px"
+            onChange={handleChangeSelect}
+            defaultValue={category}
+            className="select-categories"
+          >
+            <Categories />
+          </Select>
+          <SelectSprite />
 
-        <SubmitForumInput type="button" onClick={handleSubmit} value="Iniciar foro" />
-      </MainCtn>
+          <SubmitForumInput type="button" onClick={handleSubmit} value="Iniciar foro" />
+        </MainCtn>
+      </ForumCtn>
     </AppLayout>
   );
 };

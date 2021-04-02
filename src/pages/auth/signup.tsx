@@ -17,8 +17,12 @@ import firebase from '@firebase/index';
 import { AuthCtn } from '@styles/auth';
 
 import { emptyFields, invalidAppEmail, passLength } from '../../utils/errors';
+import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
+import { AppCtx } from '@interfaces/context';
 
 const Signup = () => {
+  //init state of signup form
   const initState: SignupState = {
     userName: '',
     mail: '',
@@ -26,12 +30,18 @@ const Signup = () => {
     password2: '',
   };
 
+  //next js router
   const router = useRouter();
 
+  const rollbar = useSelector((state: AppCtx) => state.user.rollbar);
+
+  //destructuring data of form hook
   const { data, handleChange, onSubmit } = useForm(initState, validate, success);
 
+  //destructuring data of hook state
   const { userName, mail, password, password2 }: SignupState = data;
 
+  //function for validate values
   function validate() {
     const errors: string[] = [];
 
@@ -54,10 +64,21 @@ const Signup = () => {
     return errors;
   }
 
+  //function that is fired when success validation
   async function success() {
-    await firebase.registerUser(data, router);
+    try {
+      await firebase.registerUser(data, router, rollbar);
+    } catch (e) {
+      Swal.fire(
+        '¡Error!',
+        'Lo sentimos ha ocurrido un erorr, porfavor intenta más tarde',
+        'error',
+      );
+      rollbar.error(e, window.location.href);
+    }
   }
 
+  //render data
   return (
     <Layout title="Registro">
       <BackButton />

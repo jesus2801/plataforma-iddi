@@ -9,6 +9,7 @@ import firebase from '@firebase/index';
 import { PublicUserInfo, User } from '@interfaces/index';
 
 import { handleLoading } from '@fcns/index';
+import Rollbar from 'rollbar';
 
 // when users credentials change
 export function changeUser(user: User) {
@@ -23,7 +24,7 @@ const initChangeUser = (user: User): AnyAction => ({
 });
 
 // get yhe public user info from firestore
-export function getPublicUserInfo(id: string, router: NextRouter) {
+export function getPublicUserInfo(id: string, router: NextRouter, rollbar: Rollbar) {
   return async (dispatch: Dispatch) => {
     handleLoading(true);
     dispatch(initGetUserInfo());
@@ -46,10 +47,11 @@ export function getPublicUserInfo(id: string, router: NextRouter) {
 
       handleLoading(false);
     } catch (e) {
+      rollbar.error(e, 'error obteniendo la public info del usuario');
       handleLoading(false);
       Swal.fire({
         title: '¡Error!',
-        text: 'Lo sentimos, ha ocurrido un error, porfavor regresa más tarde',
+        text: 'Lo sentimos, ha ocurrido un error, porfavor intente más tarde',
         icon: 'error',
         didClose: () => {
           router.push('/');

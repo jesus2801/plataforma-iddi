@@ -1,6 +1,7 @@
 import type { NextRouter } from 'next/router';
 import app from 'firebase/app';
 import Swal from 'sweetalert2';
+import Rollbar from 'rollbar';
 
 import config from './config';
 
@@ -32,7 +33,11 @@ export class Firebase {
 
   //---------------------------------------------------------
 
-  public async registerUser(data: SignupState, router: NextRouter): Promise<void> {
+  public async registerUser(
+    data: SignupState,
+    router: NextRouter,
+    rollbar: Rollbar,
+  ): Promise<void> {
     handleLoading(true);
 
     const querySnaphoot = await this.db
@@ -91,9 +96,16 @@ export class Firebase {
             'El correo ingresado ya ha sido utilizado por otro usuario',
             'error',
           );
-          console.log(e);
           return;
         }
+
+        rollbar.error(e, 'error en registro de usuario');
+        Swal.fire(
+          '¡Error!',
+          `Lo sentimos ha ocurrido un error al crear tu 
+           usuario, por favor intenta más tarde`,
+          'error',
+        );
       }
     });
   }

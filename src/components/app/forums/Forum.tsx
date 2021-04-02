@@ -9,9 +9,13 @@ import { ForumCard, ForumFooter } from '@styles/app/helps';
 
 import { convertToDate } from '@fcns/index';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
+import { AppCtx } from '@interfaces/context';
 
 const Forum = ({ data }: ForumPreviewProps) => {
   const [author, setAuthor] = useState(null as PublicUserInfo | null);
+
+  const rollbar = useSelector((state: AppCtx) => state.user.rollbar);
 
   useEffect(() => {
     data.author
@@ -20,7 +24,7 @@ const Forum = ({ data }: ForumPreviewProps) => {
         setAuthor(a.data() as PublicUserInfo);
       })
       .catch((e) => {
-        console.log(e);
+        rollbar.error(e, 'error obteniendo la información de un foro en el preview');
       });
   }, []);
 

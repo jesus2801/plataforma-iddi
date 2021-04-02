@@ -23,21 +23,28 @@ import { AuthCtn } from '@styles/auth';
 import { emptyFields, invalidAppEmail, passLength } from '../../utils/errors';
 
 const Login = () => {
+  //init state of login form
   const initState: LoginState = {
     mail: '',
     password: '',
   };
 
+  //next js router
   const router = useRouter();
 
-  const user = useSelector((state: AppCtx) => state.user.personal);
+  //destructuring user and rollbar
+  const { personal, rollbar } = useSelector((state: AppCtx) => state.user);
 
-  if (user) router.push('/app');
+  //if user exits, redirect to /app
+  if (personal) router.push('/app');
 
+  //destructuring data from useForm hook
   const { data, handleChange, onSubmit } = useForm(initState, validate, success);
 
+  //destructuring mail an password from state of hook
   const { mail, password }: LoginState = data;
 
+  //functions for validate form
   function validate() {
     const errors: string[] = [];
 
@@ -56,6 +63,7 @@ const Login = () => {
     return errors;
   }
 
+  //function that is fired when success validation
   async function success() {
     try {
       handleLoading(true);
@@ -76,9 +84,11 @@ const Login = () => {
       }
 
       Swal.fire('¡Error!', e.message, 'error');
+      rollbar.error(e, window.location.href);
     }
   }
 
+  //render data
   return (
     <Layout title="Ingresar">
       <BackButton />

@@ -29,7 +29,7 @@ const Helps = () => {
   //destructuring forums and user data from the principal store
   const {
     forums: { forums, isLoading },
-    user: { publicInfo },
+    user: { publicInfo, rollbar },
   } = useSelector((state: AppCtx) => state);
 
   //update category when it change
@@ -47,13 +47,13 @@ const Helps = () => {
     const input = document.getElementById('search-input') as HTMLInputElement;
     const vl = input.value;
     if (vl.trim() === '') return;
-    dispatch(getForums(category, filter, publicInfo!.docId, vl));
+    dispatch(getForums(category, filter, publicInfo!.docId, vl, rollbar));
   };
 
   //get forums with the actual filters
   useEffect(() => {
     if (publicInfo) {
-      dispatch(getForums(category, filter, publicInfo.docId, ''));
+      dispatch(getForums(category, filter, publicInfo.docId, '', rollbar));
     }
   }, [category, filter, publicInfo]);
 

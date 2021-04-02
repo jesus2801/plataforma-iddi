@@ -14,6 +14,8 @@ import {
   SET_SELECTED_FORUM_REF,
 } from 'context/types';
 import { NextRouter } from 'next/router';
+import Rollbar from 'rollbar';
+import Swal from 'sweetalert2';
 
 // get the forums with the specific filters
 export function getForums(
@@ -21,6 +23,7 @@ export function getForums(
   filter: ForumsFilter,
   userId: string,
   search: string,
+  rollbar: Rollbar,
 ) {
   return async (dispatch: Dispatch) => {
     dispatch(initSetForums());
@@ -111,7 +114,12 @@ export function getForums(
 
       dispatch(setForums(forums));
     } catch (e) {
-      console.log(e);
+      rollbar.error(e, 'error consultando foros');
+      Swal.fire(
+        '¡Error!',
+        `Lo sentimos, ha ocurrido un error, porfavor intente más tarde`,
+        'error',
+      );
     }
   };
 }
@@ -126,7 +134,7 @@ const setForums = (forums: HelpForumDoc[]): AnyAction => ({
 });
 
 //get selected forum
-export function getSelectedForum(id: string, router: NextRouter) {
+export function getSelectedForum(id: string, router: NextRouter, rollbar: Rollbar) {
   return async (dispatch: Dispatch) => {
     dispatch(initGetSelectedForum());
 
@@ -142,7 +150,12 @@ export function getSelectedForum(id: string, router: NextRouter) {
       dispatch(setSelectedForum(snapShot.data() as HelpForum));
       dispatch(setSelectedForumRef(ref));
     } catch (e) {
-      console.log(e);
+      rollbar.error(e, 'error al obtener un foro en especifico');
+      Swal.fire(
+        '¡Error!',
+        'Lo sentimos, ha ocurrido un error, por favor intente más tarde',
+        'error',
+      );
     }
   };
 }
