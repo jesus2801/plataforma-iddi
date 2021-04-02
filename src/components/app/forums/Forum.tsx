@@ -1,34 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import ProfileImg from '@cmpnts/UI/ProfileImg';
 
+import { ForumPreviewProps } from '@interfaces/props';
+import { PublicUserInfo } from '@interfaces/index';
+
 import { ForumCard } from '@styles/app/helps';
 
-const Forum = () => {
+import { convertToDate } from '@fcns/index';
+
+const Forum = ({ data }: ForumPreviewProps) => {
+  const [author, setAuthor] = useState(null as PublicUserInfo | null);
+
+  useEffect(() => {
+    const main = async () => {
+      const a = await data.author.get();
+      setAuthor(a.data() as PublicUserInfo);
+    };
+    main();
+  }, []);
+
   return (
     <ForumCard>
       <div className="author">
         <ProfileImg
           size="50px"
-          url="https://i.pinimg.com/236x/0a/64/ab/0a64abc21d6b4d728a262ff393a33c3f.jpg"
+          url={author ? author.photo! : '/static/icons/app/emptyPhoto.svg'}
         />
         <div className="info">
-          <p>Josefino calaz</p>
-          <p>student - 10° grado</p>
+          <p>{author ? author.nickname : 'cargando...'}</p>
+          <p>
+            {author
+              ? `${author.rol}${author.grade && ' - ' + author.grade + '° grado'}`
+              : 'cargando....'}
+          </p>
         </div>
       </div>
 
       <div className="content">
-        <h3>Problema de racionales</h3>
+        <h3>{data.title}</h3>
         <div className="statistics">
-          <p>3 votos</p>
-          <p>2 respuestas</p>
+          <p>{data.votes_count} votos</p>
+          <p>{data.answers.length} respuestas</p>
         </div>
       </div>
 
       <div className="card-footer">
-        <p>Hace 2 días</p>
-        <p>Matematicas</p>
+        <p>Hace {convertToDate(Date.now() - data.date)}</p>
+        <p>{data.category}</p>
       </div>
     </ForumCard>
   );

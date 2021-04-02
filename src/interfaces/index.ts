@@ -22,6 +22,7 @@ export interface PublicUserInfo {
   nickname: string;
   photo: null | string;
   rol: 'student' | 'leader' | 'admin';
+  docId: string;
 }
 
 type FirebaseDocReference = firebase.firestore.DocumentReference<firebase.firestore.DocumentData>;
@@ -42,11 +43,11 @@ interface ForumAsnwers {
 
 export type ForumCategory =
   | 'art'
-  | 'natural-sciences'
+  | 'natural sciences'
   | 'sports'
   | 'economy'
-  | 'entr'
-  | 'philosophy'
+  | 'entrepreneurship'
+  | 'philosophy & language'
   | 'math'
   | 'technology'
   | 'society';
@@ -57,8 +58,13 @@ export interface HelpForum {
   content: string;
   category: ForumCategory;
   votes: string[];
+  votes_count: number;
   comments: ForumComment[];
   answers: ForumAsnwers[];
   date: number;
   images: CKEditorImagesState[];
+}
+
+export interface HelpForumDoc extends HelpForum {
+  id: string;
 }

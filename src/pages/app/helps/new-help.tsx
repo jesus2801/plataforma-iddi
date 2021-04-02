@@ -24,6 +24,7 @@ import { CKEditorImagesState } from '@interfaces/states';
 import { AppCtx } from '@interfaces/context';
 
 import withAuth from '@cmpnts/withAuth';
+import { handleLoading } from '@fcns/index';
 
 //---------------------------------------------------------------
 //                 GLOBAL IMPORTS - PAGE COMPONENT
@@ -98,6 +99,7 @@ const NewHelp = () => {
       return;
     }
 
+    handleLoading(true);
     //get editor data
     const data: string = editor.getData();
 
@@ -109,11 +111,12 @@ const NewHelp = () => {
 
     //build the forum to send of server
     const forum: HelpForum = {
-      author: firebase.db.collection('users').doc(publicInfo.id),
+      author: firebase.db.collection('users').doc(publicInfo.docId),
       title: title,
       content: data,
       category: category as ForumCategory,
       votes: [],
+      votes_count: 0,
       comments: [],
       answers: [],
       images: images,
@@ -123,6 +126,9 @@ const NewHelp = () => {
     try {
       //upload the forum
       await firebase.db.collection('forums').add(forum);
+
+      //close the loader
+      handleLoading(false);
 
       //success upload
       Swal.fire({
@@ -135,6 +141,9 @@ const NewHelp = () => {
         },
       });
     } catch (e) {
+      //close the loader
+      handleLoading(false);
+
       //failed upload
       Swal.fire(
         '¡Error!',
@@ -169,9 +178,9 @@ const NewHelp = () => {
         <TitleForumInput
           className="title-input"
           placeholder="Ingresa el titulo del foro"
-          rows={1}
           onInput={handleTitleInput}
           value={title}
+          rows={2}
         ></TitleForumInput>
 
         {editorLoaded && ClassicEditor ? (

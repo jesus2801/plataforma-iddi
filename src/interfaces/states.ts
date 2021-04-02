@@ -10,6 +10,13 @@ export interface SignupState {
   password2: string;
 }
 
+export type ForumsFilter =
+  | 'recent'
+  | 'ancient'
+  | 'more-votes'
+  | 'less-votes'
+  | 'user-forums';
+
 export interface CKEditorImagesState {
   url: string;
   rute: string;

@@ -58,7 +58,7 @@ export const TitleForumInput = styled.textarea`
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
 
-  color: var(--black);
+  color: var(--blue);
   border: none;
   outline: none;
   resize: none;

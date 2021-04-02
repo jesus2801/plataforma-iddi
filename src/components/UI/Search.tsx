@@ -4,7 +4,7 @@ import React from 'react';
 import { SearchProps } from '@interfaces/props';
 import Svg from './Svg';
 
-const Search = ({ placeholder, width }: SearchProps) => {
+const Search = ({ placeholder, width, ...rest }: SearchProps) => {
   const SearchCtn = styled.div`
     width: ${width};
     display: flex;
@@ -37,7 +37,7 @@ const Search = ({ placeholder, width }: SearchProps) => {
 
   return (
     <SearchCtn>
-      <input type="text" placeholder={placeholder} />
+      <input type="text" placeholder={placeholder} {...rest} />
       <Svg path="/static/icons/app/search.svg" />
     </SearchCtn>
   );

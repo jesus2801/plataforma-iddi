@@ -1,4 +1,5 @@
 import { ReactNode, HTMLAttributes } from 'react';
+import { HelpForumDoc } from '.';
 
 export interface LayoutProps {
   title: string;
@@ -14,12 +15,16 @@ export interface SelectProps extends HTMLAttributes<HTMLSelectElement> {
   width?: string;
 }
 
+export interface ForumPreviewProps {
+  data: HelpForumDoc;
+}
+
 export interface ProfileImgProps {
   size: string;
   url?: string;
 }
 
-export interface SearchProps {
+export interface SearchProps extends HTMLAttributes<HTMLElement> {
   placeholder: string;
   width: string;
 }

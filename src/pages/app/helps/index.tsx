@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FocusEvent, FormEvent, KeyboardEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 
 import SelectSprite from '@cmpnts/UI/SelectSprite';
@@ -11,17 +11,51 @@ import Select from '@cmpnts/UI/Select';
 
 import { FiltersCtn, MainForumsCtn } from '@styles/app/helps';
 
+import { ForumCategory, HelpForumDoc } from '@interfaces/index';
+import { ForumsFilter } from '@interfaces/states';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppCtx } from '@interfaces/context';
+import { getForums } from 'context/actions/forums.actions';
+
 const Helps = () => {
-  const [category, setCategory] = useState('all');
-  const [filter, setFilter] = useState('recents');
+  //component states
+  const [category, setCategory] = useState('all' as 'all' | ForumCategory);
+  const [filter, setFilter] = useState('recent' as ForumsFilter);
 
+  //dispatch for exec actions
+  const dispatch = useDispatch();
+
+  //destructuring forums and user data from the principal store
+  const {
+    forums: { forums, isLoading },
+    user: { publicInfo },
+  } = useSelector((state: AppCtx) => state);
+
+  //update category when it change
   const handleCategory = (e: FormEvent<HTMLSelectElement>) => {
-    setCategory(e!.currentTarget.value);
+    setCategory(e!.currentTarget.value as 'all' | ForumCategory);
   };
 
+  //update filter when it change
   const handleFilter = (e: FormEvent<HTMLSelectElement>) => {
-    setFilter(e!.currentTarget.value);
+    setFilter(e!.currentTarget.value as ForumsFilter);
   };
+
+  const initSearch = () => {
+    const input = document.getElementById('search-input') as HTMLInputElement;
+    const vl = input.value;
+    if (vl.trim() === '') return;
+    dispatch(getForums(category, filter, publicInfo!.docId, vl));
+  };
+
+  //get forums with the actual filters
+  useEffect(() => {
+    if (publicInfo) {
+      const input = document.getElementById('search-input') as HTMLInputElement;
+      const vl = input.value;
+      dispatch(getForums(category, filter, publicInfo.docId, vl));
+    }
+  }, [category, filter, publicInfo]);
 
   return (
     <AppLayout title="Cursos y repasos">
@@ -35,7 +69,16 @@ const Helps = () => {
         </div>
 
         <FiltersCtn className="filters">
-          <Search width="40%" placeholder="Busca foros o ayudas" />
+          <Search
+            width="40%"
+            placeholder="Busca un titulo exacto"
+            onKeyDown={(e) => {
+              if (e.key.toLowerCase() === 'enter') {
+                initSearch();
+              }
+            }}
+            id="search-input"
+          />
 
           <div className="selects">
             <Select minWidth="200px" onChange={handleCategory} defaultValue={category}>
@@ -45,27 +88,24 @@ const Helps = () => {
             <SelectSprite />
 
             <Select minWidth="200px" onChange={handleFilter} defaultValue={filter}>
-              <option value="recents">Más recientes</option>
-              <option value="epa">Más antiguos</option>
-              <option value="epa">Más votos</option>
-              <option value="epa">Menos votos</option>
-              <option value="epa">Mis foros</option>
+              <option value="recent">Más recientes</option>
+              <option value="ancient">Más antiguos</option>
+              <option value="more-votes">Más votos</option>
+              <option value="less-votes">Menos votos</option>
+              <option value="user-forums">Mis foros</option>
             </Select>
           </div>
         </FiltersCtn>
 
-        <div className="forums">
-          <Forum />
-          <Forum />
-          <Forum />
-          <Forum />
-          <Forum />
-          <Forum />
-          <Forum />
-          <Forum />
-          <Forum />
-          <Forum />
-        </div>
+        {isLoading ? (
+          <p>Cargando...</p>
+        ) : (
+          <div className="forums">
+            {forums.map((data) => (
+              <Forum data={data} key={data.id} />
+            ))}
+          </div>
+        )}
       </MainForumsCtn>
     </AppLayout>
   );
