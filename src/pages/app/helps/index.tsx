@@ -17,6 +17,7 @@ import { ForumsFilter } from '@interfaces/states';
 import { AppCtx } from '@interfaces/context';
 
 import { getForums } from 'context/actions/forums.actions';
+import Svg from '@cmpnts/UI/Svg';
 
 const Helps = () => {
   //component states
@@ -100,6 +101,8 @@ const Helps = () => {
 
         {isLoading ? (
           <p>Cargando...</p>
+        ) : forums.length === 0 ? (
+          <Svg path="/static/icons/app/tumbleweed.svg" />
         ) : (
           <div className="forums">
             {forums.map((data) => (

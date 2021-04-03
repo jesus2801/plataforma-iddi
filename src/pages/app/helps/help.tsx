@@ -5,9 +5,11 @@ import NoSSR from '@mpth/react-no-ssr';
 import Swal from 'sweetalert2';
 
 import firebase from '@firebase/index';
+import fb from 'firebase/app';
 
 import {
   ForumAnswersLayout,
+  ForumAsnwers,
   ForumComment,
   ForumCommentLayout,
   PublicUserInfo,
@@ -49,6 +51,12 @@ const Help = () => {
     user: { publicInfo, rollbar, personal },
   } = useSelector((state: AppCtx) => state);
 
+  //state for votes
+  const [votes, setVotes] = useState({
+    votes: selectedForum ? selectedForum.votes : null,
+    votes_count: selectedForum ? selectedForum.votes_count : null,
+  });
+
   //next router
   const router = useRouter();
 
@@ -70,6 +78,11 @@ const Help = () => {
   //get author info and comments info
   useEffect(() => {
     if (selectedForum) {
+      setVotes({
+        votes: selectedForum.votes,
+        votes_count: selectedForum.votes_count,
+      });
+
       selectedForum.author
         .get()
         .then((a) => {
@@ -127,7 +140,9 @@ const Help = () => {
 
   useEffect(() => {
     if (selectedForumRef && forumAnswers === null) {
-      const answersRef = selectedForumRef!.collection('answers');
+      const answersRef = selectedForumRef!
+        .collection('answers')
+        .orderBy('votes_count', 'desc');
 
       answersRef
         .get()
@@ -216,14 +231,151 @@ const Help = () => {
   };
 
   // TODO: finish the handle vote
-  const handleVote = () => {};
+  const handleVote = () => {
+    if (votes.votes === null || votes.votes_count === null) return;
+    if (votes.votes.includes(personal!.uid)) return;
+
+    setVotes({
+      votes: [...votes.votes, personal!.uid],
+      votes_count: votes.votes_count + 1,
+    });
+
+    selectedForumRef!
+      .update({
+        votes_count: fb.firestore.FieldValue.increment(1),
+        votes: fb.firestore.FieldValue.arrayUnion(personal!.uid),
+      })
+      .catch((e) => {
+        setVotes({
+          votes: votes.votes!.filter((vote) => vote !== personal!.uid),
+          votes_count: votes.votes_count! - 1,
+        });
+        rollbar.error(e, 'no se pudo añadir un voto a una respuesta de foro');
+        Swal.fire(
+          '¡Error!',
+          'Lo sentimos, no se pudo añadir tu voto, por favor intenta más tarde',
+          'error',
+        );
+      });
+  };
+
+  const deleteAnswers = () => {
+    Swal.fire({
+      title: '¿Seguro?',
+      text: `¿Estas seguro de eliminar el foro? 
+        ¡Recuerda que esta accion es irreversible!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        //timer of 6 seconds
+        let timerInterval: any;
+        Swal.fire({
+          title: '¡Eliminando Foro!',
+          html: 'Terminando en <b></b> milisegundos.',
+          timer: 6000,
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading();
+            timerInterval = setInterval(() => {
+              const content = Swal.getContent();
+              if (content) {
+                const b: any = content.querySelector('b');
+                if (b) {
+                  b.textContent = Swal.getTimerLeft();
+                }
+              }
+            }, 100);
+          },
+          willClose: () => {
+            clearInterval(timerInterval);
+          },
+        }).then(() => {
+          router.push('/app/helps');
+        });
+
+        selectedForum!.images.forEach((image) => {
+          firebase.storageRef.child(image.rute).delete().catch(reportErrorOnDeleteForum);
+        });
+
+        selectedForumRef!
+          .delete()
+          .then(() => {
+            selectedForumRef!
+              .collection('answers')
+              .get()
+              .then((answersSnapshot) => {
+                answersSnapshot.forEach(async (answer) => {
+                  const data = answer.data() as ForumAsnwers;
+
+                  data.images.forEach((image) => {
+                    firebase.storageRef
+                      .child(image.rute)
+                      .delete()
+                      .catch(reportErrorOnDeleteForum);
+                  });
+
+                  answer.ref
+                    .delete()
+                    .then(() => {
+                      answer.ref
+                        .collection('comments')
+                        .get()
+                        .then((commentsSnapshot) => {
+                          commentsSnapshot.forEach((comment) => {
+                            comment.ref.delete().catch(reportErrorOnDeleteForum);
+                          });
+                        })
+                        .catch(reportErrorOnDeleteForum);
+                    })
+                    .catch(reportErrorOnDeleteForum);
+                });
+              })
+              .catch(reportErrorOnDeleteForum);
+
+            selectedForumRef!
+              .collection('comments')
+              .get()
+              .then((commentsSnapshot) => {
+                commentsSnapshot.forEach((comment) => {
+                  comment.ref.delete().catch(reportErrorOnDeleteForum);
+                });
+              })
+              .catch(reportErrorOnDeleteForum);
+          })
+          .catch(reportErrorOnDeleteForum);
+      }
+    });
+  };
+
+  const reportErrorOnDeleteForum = (e: any) => {
+    console.log(e);
+    rollbar.critical(e, 'error el borrar foro');
+    handleLoading(false);
+    Swal.fire(
+      '¡Error!',
+      'Lo sentimos, ha ocurrido un error borrando el foro, por favor intenta más tarde',
+      'error',
+    );
+  };
 
   //render data
   return (
     <AppLayout title="Curso o repaso">
       <ForumCtn>
-        {selectedForum ? (
+        {selectedForum && selectedForumRef ? (
           <>
+            <SubmitForumInput
+              type="button"
+              value="Eliminar el foro"
+              className="delete-forum"
+              onClick={deleteAnswers}
+            />
+
             <MainCtn>
               <div className="author">
                 <ProfileImg
@@ -252,17 +404,18 @@ const Help = () => {
                 dangerouslySetInnerHTML={{ __html: selectedForum.content }}
               ></div>
 
-              <p className="vote-forum">
-                <img
-                  src={
-                    selectedForum.votes.includes(personal!.uid)
-                      ? '/static/icons/app/heart-fill.png'
-                      : '/static/icons/app/heart.png'
-                  }
-                  alt="heart icon"
-                  onClick={handleVote}
-                />
-                {selectedForum.votes_count} votos
+              <p className="vote-forum" onClick={handleVote}>
+                {votes.votes && (
+                  <img
+                    src={
+                      votes.votes.includes(personal!.uid)
+                        ? '/static/icons/app/heart-fill.png'
+                        : '/static/icons/app/heart.png'
+                    }
+                    alt="heart icon"
+                  />
+                )}
+                {votes.votes_count} votos
               </p>
 
               <ForumFooter className="forum-footer">
@@ -287,20 +440,29 @@ const Help = () => {
 
             <NoSSR>
               {forumComments &&
-                forumComments.map((com) => <Comment key={com.id} data={com} />)}
+                forumComments.map((com) => (
+                  <Comment
+                    key={com.id}
+                    data={com}
+                    creator={author}
+                    docRef={selectedForumRef!.collection('comments').doc(com.id)}
+                  />
+                ))}
             </NoSSR>
 
             <a href={`/app/helps/add-answer?forum=${query.id}`} target="_blank">
               <SubmitForumInput
                 type="button"
-                value={`Agregar una respuesta`}
+                value="Agregar una respuesta"
                 className="add-answer"
               />
             </a>
 
             <NoSSR>
               {forumAnswers &&
-                forumAnswers.map((ans) => <Answer key={ans.id} data={ans} />)}
+                forumAnswers.map((ans) => (
+                  <Answer key={ans.id} creator={author} data={ans} />
+                ))}
             </NoSSR>
           </>
         ) : (

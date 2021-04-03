@@ -42,6 +42,11 @@ export const MainForumsCtn = styled.main`
     }
   }
 
+  object[data='/static/icons/app/tumbleweed.svg'] {
+    width: 250px;
+    margin: 30px auto 0 auto;
+  }
+
   .forums {
     margin-top: 40px;
     width: 100%;

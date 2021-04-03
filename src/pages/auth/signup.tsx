@@ -69,12 +69,12 @@ const Signup = () => {
     try {
       await firebase.registerUser(data, router, rollbar);
     } catch (e) {
+      rollbar.error(e, window.location.href);
       Swal.fire(
         '¡Error!',
         'Lo sentimos ha ocurrido un erorr, porfavor intenta más tarde',
         'error',
       );
-      rollbar.error(e, window.location.href);
     }
   }
 

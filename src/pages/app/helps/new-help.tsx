@@ -106,7 +106,6 @@ const NewHelp = () => {
       return;
     }
 
-    handleLoading(true);
     //get editor data
     const data: string = editor.getData();
 
@@ -115,6 +114,8 @@ const NewHelp = () => {
       Swal.fire('¡Error!', 'Porfavor rellene correctamente todos los campos', 'error');
       return;
     }
+
+    handleLoading(true);
 
     //build the forum to send of server
     const forum: HelpForum = {

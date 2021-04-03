@@ -160,7 +160,7 @@ const NewAnswer = () => {
     <AppLayout title="Nuevo respuesta a foro">
       <ForumCtn>
         <MainCtn>
-          <div className="author">
+          <div className="author m-bottom">
             <ProfileImg size="110px" />
             <div className="info">
               {publicInfo && (
@@ -219,6 +219,7 @@ const NewAnswer = () => {
             type="button"
             onClick={handleSubmit}
             value="Agregar respuesta"
+            className="m-top"
           />
         </MainCtn>
       </ForumCtn>

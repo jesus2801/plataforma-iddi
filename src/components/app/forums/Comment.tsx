@@ -11,11 +11,13 @@ import { ForumCommentProps } from '@interfaces/props';
 
 import { CommentForumDiv } from '@styles/app/helps/helps';
 import { defaultPhotoRute } from 'utils/variables';
+import Swal from 'sweetalert2';
 
-const Comment = ({ data }: ForumCommentProps) => {
+const Comment = ({ data, creator, docRef }: ForumCommentProps) => {
   const [author, setAuthor] = useState(null as null | PublicUserInfo);
+  const [show, setShow] = useState(true);
 
-  const rollbar = useSelector((state: AppCtx) => state.user.rollbar);
+  const { rollbar, personal } = useSelector((state: AppCtx) => state.user);
 
   useEffect(() => {
     data.author
@@ -32,23 +34,55 @@ const Comment = ({ data }: ForumCommentProps) => {
       });
   }, []);
 
-  return (
-    <CommentForumDiv>
-      <ProfileImg
-        size="80px"
-        url={author ? author.photo || defaultPhotoRute : defaultPhotoRute}
-      />
+  const deleteComment = () => {
+    setShow(false);
 
-      <div className="info">
-        <p>
-          <span>{author ? author.nickname : 'Cargando...'}</span>
-          {author && author.grade && ` - ${author.grade}° grado`}
-        </p>
-        <p>{data.comment}</p>
-        <p>Hace {convertToDate(Date.now() - data.date)}</p>
+    docRef.delete().catch((e) => {
+      setShow(true);
+      rollbar.error(e, 'error al eliminar comentario de foro');
+      Swal.fire(
+        '¡Error!',
+        'Lo sentimos, no hemos podido eliminar tu comentario, por favor intenta más tarde',
+        'error',
+      );
+    });
+  };
+
+  return show ? (
+    <CommentForumDiv>
+      <div className="author">
+        <ProfileImg
+          size="80px"
+          url={author ? author.photo || defaultPhotoRute : defaultPhotoRute}
+        />
+        <div className="info">
+          <p>
+            <span>{author ? author.nickname : 'Cargando...'}</span>
+            {author && author.grade && ` - ${author.grade}° grado`}
+            <span>
+              {creator && author ? author.id === creator.id && ' creador del foro' : null}
+            </span>
+          </p>
+          <p>{data.comment}</p>
+          <p>Hace {convertToDate(Date.now() - data.date)}</p>
+        </div>
       </div>
+      {author && personal!.uid === author.id ? (
+        <div className="options">
+          <div>
+            <li onClick={deleteComment}>Eliminar</li>
+          </div>
+          <img
+            src="/static/icons/app/options.png"
+            alt="options icon"
+            onClick={(e) =>
+              e.currentTarget.parentNode!.querySelector('div')!.classList.toggle('active')
+            }
+          />
+        </div>
+      ) : null}
     </CommentForumDiv>
-  );
+  ) : null;
 };
 
 export default Comment;

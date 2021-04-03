@@ -25,7 +25,7 @@ export interface PublicUserInfo {
   docId: string;
 }
 
-type FirebaseDocReference = firebase.firestore.DocumentReference<firebase.firestore.DocumentData>;
+export type FirebaseDocReference = firebase.firestore.DocumentReference<firebase.firestore.DocumentData>;
 
 export interface ForumComment {
   author: FirebaseDocReference;

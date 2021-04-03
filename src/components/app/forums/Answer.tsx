@@ -12,15 +12,20 @@ import { defaultPhotoRute } from 'utils/variables';
 import { convertToDate, handleLoading } from '@fcns/index';
 
 import firebase from '@firebase/index';
+import fb from 'firebase/app';
 
 import { CommentInput, MainCtn } from '@styles/app/helps/helps';
 import { ForumFooter } from '@styles/app/helps';
 import Comment from './Comment';
 import Swal from 'sweetalert2';
 
-const Answer = ({ data }: ForumAnswerProps) => {
+const Answer = ({ data, creator }: ForumAnswerProps) => {
   const [author, setAuthor] = useState(null as null | PublicUserInfo);
   const [comments, setComments] = useState(null as null | ForumCommentLayout[]);
+  const [votes, setVotes] = useState({
+    votes: data.votes,
+    votes_count: data.votes_count,
+  });
 
   const [newComment, setNewComment] = useState('');
 
@@ -124,8 +129,34 @@ const Answer = ({ data }: ForumAnswerProps) => {
     }
   };
 
-  //TODO: finish the handle vote
-  const handleVote = () => {};
+  const handleVote = async () => {
+    if (votes.votes.includes(personal!.uid)) return;
+
+    setVotes({
+      votes: [...votes.votes, personal!.uid],
+      votes_count: votes.votes_count + 1,
+    });
+
+    selectedForumRef!
+      .collection('answers')
+      .doc(data.id)
+      .update({
+        votes_count: fb.firestore.FieldValue.increment(1),
+        votes: fb.firestore.FieldValue.arrayUnion(personal!.uid),
+      })
+      .catch((e) => {
+        setVotes({
+          votes: votes.votes.filter((vote) => vote !== personal!.uid),
+          votes_count: votes.votes_count - 1,
+        });
+        rollbar.error(e, 'no se pudo añadir un voto a una respuesta de foro');
+        Swal.fire(
+          '¡Error!',
+          'Lo sentimos, no se pudo añadir tu voto, por favor intenta más tarde',
+          'error',
+        );
+      });
+  };
 
   return (
     <>
@@ -158,17 +189,16 @@ const Answer = ({ data }: ForumAnswerProps) => {
 
         <ForumFooter className="forum-footer">
           <p>Hace {convertToDate(Date.now() - data.date)}</p>
-          <span className="vote-forum">
+          <span className="vote-forum" onClick={handleVote}>
             <img
               src={
-                data.votes.includes(personal!.uid)
+                votes.votes.includes(personal!.uid)
                   ? '/static/icons/app/heart-fill.png'
                   : '/static/icons/app/heart.png'
               }
               alt="heart icon"
-              onClick={handleVote}
             />
-            {data.votes_count} votos
+            {votes.votes_count} votos
           </span>
         </ForumFooter>
       </MainCtn>
@@ -187,7 +217,19 @@ const Answer = ({ data }: ForumAnswerProps) => {
         </div>
       </CommentInput>
 
-      {comments && comments.map((com) => <Comment key={com.id} data={com} />)}
+      {comments &&
+        comments.map((com) => (
+          <Comment
+            key={com.id}
+            data={com}
+            creator={creator}
+            docRef={selectedForumRef!
+              .collection('answers')
+              .doc(data.id)
+              .collection('comments')
+              .doc(com.id)}
+          />
+        ))}
     </>
   );
 };

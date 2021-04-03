@@ -1,5 +1,11 @@
 import { ReactNode, HTMLAttributes } from 'react';
-import { ForumAnswersLayout, ForumCommentLayout, HelpForumDoc } from '.';
+import {
+  ForumAnswersLayout,
+  ForumCommentLayout,
+  HelpForumDoc,
+  PublicUserInfo,
+  FirebaseDocReference,
+} from '.';
 
 export interface LayoutProps {
   title: string;
@@ -8,10 +14,13 @@ export interface LayoutProps {
 
 export interface ForumAnswerProps {
   data: ForumAnswersLayout;
+  creator: PublicUserInfo | null;
 }
 
 export interface ForumCommentProps {
   data: ForumCommentLayout;
+  creator: PublicUserInfo | null;
+  docRef: FirebaseDocReference;
 }
 
 export interface SvgProps {

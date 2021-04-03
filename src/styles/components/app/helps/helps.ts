@@ -8,6 +8,10 @@ export const ForumCtn = styled.div`
   .add-answer {
     margin: 25px 0;
   }
+
+  .delete-forum {
+    background-color: var(--lightRed);
+  }
 `;
 
 const DarkShadow = `
@@ -23,6 +27,7 @@ export const MainCtn = styled.main`
   background-color: #fff;
   border-radius: 8px;
   padding: 25px;
+  margin-top: 45px;
 
   ${DarkShadow}
 
@@ -74,6 +79,7 @@ export const MainCtn = styled.main`
   }
 
   .vote-forum {
+    width: fit-content;
     margin: 16px 30px 0 0;
     display: flex;
     flex-direction: row;
@@ -86,6 +92,14 @@ export const MainCtn = styled.main`
       width: 30px;
       margin-right: 10px;
     }
+  }
+
+  .m-top {
+    margin-top: 20px;
+  }
+
+  .m-bottom {
+    margin-bottom: 20px;
   }
 `;
 
@@ -188,36 +202,81 @@ export const CommentForumDiv = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: space-between;
 
-  .info {
-    margin-left: 10px;
+  .author {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     justify-content: center;
 
-    min-height: 80px;
+    .info {
+      margin-left: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
 
-    p:first-of-type {
-      color: var(--black);
-      margin: 0;
-      span {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 600;
+      min-height: 80px;
+
+      p:first-of-type {
+        color: var(--black);
+        margin: 0;
+        span {
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 600;
+        }
+      }
+
+      p:nth-of-type(2) {
+        color: var(--black);
+        font-size: 15px;
+        margin: 8px 0;
+      }
+
+      p:nth-of-type(3) {
+        color: var(--black);
+        font-size: 13px;
+        margin: 0;
+      }
+    }
+  }
+
+  .options {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    div {
+      position: absolute;
+      transform: translateX(-50px);
+      background-color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+
+      -webkit-box-shadow: 1px 1px 3px 0.1px rgba(217, 217, 217, 1);
+      -moz-box-shadow: 1px 1px 3px 0.1px rgba(217, 217, 217, 1);
+      box-shadow: 1px 1px 3px 0.1px rgba(217, 217, 217, 1);
+
+      opacity: 0;
+      visibility: hidden;
+      transition: all 200ms ease;
+
+      &.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      li {
+        color: var(--black);
+        list-style: none;
+        cursor: pointer;
       }
     }
 
-    p:nth-of-type(2) {
-      color: var(--black);
-      font-size: 15px;
-      margin: 8px 0;
-    }
-
-    p:nth-of-type(3) {
-      color: var(--black);
-      font-size: 13px;
-      margin: 0;
+    img {
+      cursor: pointer;
     }
   }
 `;
