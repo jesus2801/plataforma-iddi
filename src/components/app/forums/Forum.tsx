@@ -11,6 +11,7 @@ import { convertToDate } from '@fcns/index';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { AppCtx } from '@interfaces/context';
+import { defaultPhotoRute } from 'utils/variables';
 
 const Forum = ({ data }: ForumPreviewProps) => {
   const [author, setAuthor] = useState(null as PublicUserInfo | null);
@@ -36,8 +37,8 @@ const Forum = ({ data }: ForumPreviewProps) => {
             size="50px"
             url={
               author
-                ? author.photo || '/static/icons/app/emptyPhoto.webp'
-                : '/static/icons/app/emptyPhoto.webp'
+                ? author.photo || defaultPhotoRute
+                : defaultPhotoRute
             }
           />
 
@@ -56,7 +57,7 @@ const Forum = ({ data }: ForumPreviewProps) => {
 
           <div className="statistics">
             <p>{data.votes_count} votos</p>
-            <p>{data.answers.length} respuestas</p>
+            <p>{data.answers_count} respuestas</p>
           </div>
         </div>
 

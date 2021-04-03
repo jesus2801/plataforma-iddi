@@ -1,9 +1,13 @@
 import { ReactNode, HTMLAttributes } from 'react';
-import { ForumCommentLayout, HelpForumDoc } from '.';
+import { ForumAnswersLayout, ForumCommentLayout, HelpForumDoc } from '.';
 
 export interface LayoutProps {
   title: string;
   children: ReactNode;
+}
+
+export interface ForumAnswerProps {
+  data: ForumAnswersLayout;
 }
 
 export interface ForumCommentProps {

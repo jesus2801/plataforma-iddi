@@ -37,12 +37,18 @@ export interface ForumCommentLayout extends ForumComment {
   id: string;
 }
 
-interface ForumAsnwers {
+export interface ForumAsnwers {
   author: FirebaseDocReference;
   content: string;
-  comments: ForumComment[];
+  images: CKEditorImagesState[];
+  comments?: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>;
   votes: string[];
+  votes_count: number;
   date: number;
+}
+
+export interface ForumAnswersLayout extends ForumAsnwers {
+  id: string;
 }
 
 export type ForumCategory =
@@ -64,7 +70,8 @@ export interface HelpForum {
   votes: string[];
   votes_count: number;
   comments?: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>;
-  answers: ForumAsnwers[];
+  answers?: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>;
+  answers_count: number;
   date: number;
   images: CKEditorImagesState[];
 }

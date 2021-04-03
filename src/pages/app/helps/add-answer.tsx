@@ -1,41 +1,34 @@
-import React, { FormEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import Swal from 'sweetalert2';
 
-import {
-  ForumCtn,
-  MainCtn,
-  SubmitForumInput,
-  TitleForumInput,
-} from '@styles/app/helps/helps';
+import { ForumCtn, MainCtn, SubmitForumInput } from '@styles/app/helps/helps';
 
 import useCKEditor from '@hooks/useCKEditor';
 
-import SelectSprite from '@cmpnts/UI/SelectSprite';
 import ProfileImg from '@cmpnts/UI/ProfileImg';
-import Categories from '@cmpnts/UI/Categories';
 import AppLayout from '@cmpnts/AppLayout';
-import Select from '@cmpnts/UI/Select';
 
 import { returnImageRemoved } from '@fcns/CKEditor';
 import { CustomUpload } from '@fcns/CKEditor';
 import { isEmpty } from '@fcns/validate';
 
 import firebase from '@firebase/index';
+import fb from 'firebase/app';
 
-import { HelpForum, ForumCategory } from '@interfaces/index';
 import { CKEditorImagesState } from '@interfaces/states';
 import { AppCtx } from '@interfaces/context';
 
 import withAuth from '@cmpnts/withAuth';
 import { handleLoading } from '@fcns/index';
+import { ForumAsnwers } from '@interfaces/index';
 
 //---------------------------------------------------------------
 //                 GLOBAL IMPORTS - PAGE COMPONENT
 //---------------------------------------------------------------
 
-const NewHelp = () => {
+const NewAnswer = () => {
   //variables for useCKEditor
   const { editorLoaded, CKEditor, ClassicEditor } = useCKEditor();
 
@@ -43,40 +36,20 @@ const NewHelp = () => {
   const [editor, setEditor] = useState(null as any);
   const [images, setImages] = useState([] as CKEditorImagesState[]);
 
-  //state of form data
-  const [form, setForm] = useState({
-    title: '',
-    category: '',
-  });
-
   //router for redirect user after upload forum
   const router = useRouter();
 
-  //destructurintg form values
-  const { title, category } = form;
+  //desrtucturing query
+  const {
+    query: { forum },
+  } = router;
 
-  //destructuring public user info form main store
+  //destructuring public user info and rollbar from global sotore
   const { publicInfo, rollbar } = useSelector((state: AppCtx) => state.user);
 
   //handle images when user put a new image on the editor
   const handleImages = (newValue: CKEditorImagesState) => {
     setImages((prevValue) => [...prevValue, newValue]);
-  };
-
-  //handle change of select category
-  const handleChangeSelect = (e: FormEvent<HTMLSelectElement | HTMLTextAreaElement>) => {
-    setForm({
-      ...form,
-      category: e.currentTarget.value,
-    });
-  };
-
-  //when user is typing in the title input
-  const handleTitleInput = (e: FormEvent<HTMLTextAreaElement>) => {
-    e.currentTarget.value = e.currentTarget.value.replace('\n', ' ').replace('  ', ' ');
-    setForm({ ...form, title: e.currentTarget.value });
-    e.currentTarget.style.height = 'auto';
-    e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
   };
 
   // when user delete a image from the editor
@@ -90,7 +63,7 @@ const NewHelp = () => {
         });
       })
       .catch((e) => {
-        rollbar.error(e, 'imagen no se pudo eliminar en foro');
+        rollbar.error(e, 'imagen no se pudo eliminar en respuesta');
       });
   };
 
@@ -106,55 +79,76 @@ const NewHelp = () => {
       return;
     }
 
-    handleLoading(true);
+    if (!forum) {
+      Swal.fire(
+        '¡Error!',
+        `Lo sentimos, esta ruta no está permitida para subir 
+        respuestas, por favor acceda a una ruta válida clickeando 
+        en los botones de "agregar respuesta" que se encuentran en
+        cada foro`,
+        'error',
+      );
+      return;
+    }
+
     //get editor data
     const data: string = editor.getData();
 
     //show error if some data is empty
-    if (isEmpty(data, title, category)) {
+    if (isEmpty(data)) {
       Swal.fire('¡Error!', 'Porfavor rellene correctamente todos los campos', 'error');
       return;
     }
 
-    //build the forum to send of server
-    const forum: HelpForum = {
+    handleLoading(true);
+
+    //build the message or answer to send of server
+    const answer: ForumAsnwers = {
       author: firebase.db.collection('users').doc(publicInfo.docId),
-      title: title,
       content: data,
-      category: category as ForumCategory,
+      images: images,
       votes: [],
       votes_count: 0,
-      answers_count: 0,
-      images: images,
       date: Date.now(),
     };
 
     try {
-      //upload the forum
-      await firebase.db.collection('forums').add(forum);
+      await firebase.db
+        .collection('forums')
+        .doc(forum as string)
+        .collection('answers')
+        .add(answer);
+
+      await firebase.db
+        .collection('forums')
+        .doc(forum as string)
+        .update({
+          answers_count: fb.firestore.FieldValue.increment(1),
+        });
 
       //close the loader
       handleLoading(false);
 
       //success upload
       Swal.fire({
-        title: '¡Foro subido!',
-        text: `¡Felicidades!, hemos subido tu foro
-        exitosamente, te invitamos a disfrutar de él`,
+        title: 'Respusta subida!',
+        text: `¡Felicidades!, hemos subido tu respuesta
+        exitosamente, te invitamos a disfrutar de ella`,
         icon: 'success',
         didClose: () => {
-          router.push('/app/helps');
+          router.push(`/app/helps/help?id=${forum}`);
         },
       });
     } catch (e) {
       rollbar.error(e, 'fallo en la subida de un foro');
+
       //close the loader
       handleLoading(false);
 
       //failed upload
       Swal.fire(
         '¡Error!',
-        `Lo sentimos, no hemos podido subir tu foro, 
+        `Lo sentimos, no hemos podido subir tu respuesta, 
          porfavor intenta más tarde`,
         'error',
       );
@@ -163,7 +157,7 @@ const NewHelp = () => {
 
   // render data
   return (
-    <AppLayout title="Nuevo curso o repaso">
+    <AppLayout title="Nuevo respuesta a foro">
       <ForumCtn>
         <MainCtn>
           <div className="author">
@@ -183,20 +177,12 @@ const NewHelp = () => {
             </div>
           </div>
 
-          <TitleForumInput
-            className="title-input"
-            placeholder="Ingresa el titulo del foro"
-            onInput={handleTitleInput}
-            value={title}
-            rows={2}
-          ></TitleForumInput>
-
           {editorLoaded && ClassicEditor ? (
             <CKEditor
               editor={ClassicEditor.default}
               config={{
                 placeholder:
-                  'En este editor puedes escribir todo el contenido de tu foro',
+                  'En este editor puedes escribir todo el contenido de tu respuesta',
               }}
               onReady={(editor: any) => {
                 setEditor(editor);
@@ -229,21 +215,15 @@ const NewHelp = () => {
             <p>Cargando editor...</p>
           )}
 
-          <Select
-            minWidth="200px"
-            onChange={handleChangeSelect}
-            defaultValue={category}
-            className="select-categories"
-          >
-            <Categories />
-          </Select>
-          <SelectSprite />
-
-          <SubmitForumInput type="button" onClick={handleSubmit} value="Iniciar foro" />
+          <SubmitForumInput
+            type="button"
+            onClick={handleSubmit}
+            value="Agregar respuesta"
+          />
         </MainCtn>
       </ForumCtn>
     </AppLayout>
   );
 };
 
-export default withAuth(NewHelp);
+export default withAuth(NewAnswer);
